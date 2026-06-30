@@ -1,63 +1,47 @@
-> js-cartographer
-# outline
-Here is a strategic, phased outline for integrating Wakaru’s capabilities into Humanify and building the new Call Graph feature.
+# JS Cartographer (v3 Greenfield Restart): Implementation Plan
 
-This plan prioritizes **stability first**, **optimization second**, and **new features third**. This ensures that we improve the core tool (better/cheaper deobfuscation) before building complex analytics on top of it.
+This implementation plan overrides previous versions to align with our robust ESM-first, Map-Reduce architecture. 
 
-### **Phase 1: Foundation & Dependency Integration**
+## Table of Contents
 
-*Goal: Successfully import Wakaru’s core libraries into the Humanify environment without breaking existing functionality.*
+### **Phase 1: Foundation & The Unified AST Service**
+* **1.1. ESM Build Setup:** Initialize `package.json` with `"type": "module"`. Configure `tsc` to output modern ESM.
+* **1.2. Centralized Babel Interop:** Create a unified `src/services/ast/babel-core.ts` wrapper. This single file will safely resolve Babel's default exports to eliminate CJS/ESM interop crashes system-wide.
+* **1.3. Dependency Injection:** Install `@wakaru/unminify`, `@babel/core`, `enhanced-resolve`, and `prettier`.
+* **🛑 Success Gate:** The success criteria defined in [TESTING.md (Phase 1)](file:///home/guid/projects/cartographer/v1/TESTING.md#phase-1-foundation--the-unified-ast-service) MUST be met, and all unit tests must pass, before this phase is considered complete.
 
-* **1.1. Dependency Injection:** Install `@wakaru/unminify` and `@wakaru/unpacker` into the Humanify project.
-* **1.2. Pipeline Refactoring:** Refactor Humanify’s main execution flow to support a formal "Pre-processing" stage (middleware pattern) before the LLM prompt generation.
-* **1.3. Non-Regression Testing:** Establish a baseline test suite using current Humanify samples to ensure the new dependencies don't introduce instability or bloat.
+### **Phase 2: The Map-Reduce In-Memory Pipeline**
+* **2.1. File Map Orchestrator:** Implement the core loop that processes files one-by-one.
+* **2.2. The Wakaru Boundary:** The loop first reads the file to a string, runs Wakaru structural rules, and *then* parses the resulting clean string into a Babel AST using our centralized service.
+* **2.3. The Heuristic Filter:** Implement `IdentifierFilter` on the AST to skip standard globals (saving LLM costs).
+* **🛑 Success Gate:** The success criteria defined in [TESTING.md (Phase 2)](file:///home/guid/projects/cartographer/v1/TESTING.md#phase-2-the-map-reduce-in-memory-pipeline) MUST be met, and all unit tests must pass, before this phase is considered complete.
 
-### **Phase 2: The Syntax Restoration Layer ("The Cleanup Pass")**
+### **Phase 3: Cloud-First LLM Renaming**
+* **3.1. Provider Integration:** Integrate Google Gemini/OpenAI SDKs.
+* **3.2. Scope-based Traversal:** Traverse the AST (outer scopes first) and generate context windows.
+* **3.3. Structured JSON Outputs:** Enforce strict JSON responses from the LLM mapping `{ "oldName": "newName" }`, and apply them to the AST.
+* **🛑 Success Gate:** The success criteria defined in [TESTING.md (Phase 3)](file:///home/guid/projects/cartographer/v1/TESTING.md#phase-3-cloud-first-llm-renaming) MUST be met, and all unit tests must pass, before this phase is considered complete.
 
-*Goal: Feed the LLM cleaner code by using Wakaru to fix structural ugliness (Async/Await, Loops, Classes) before the AI sees it.*
+### **Phase 4: Local Graph Extraction (The "Map" Conclusion)**
+* **4.1. Local Visitors:** Before formatting, run Visitors on the AST to extract:
+  - Imports & Exports (Module Intelligence)
+  - Function Definitions & Call Expressions (Call Graph)
+  - API Sinks (fetch/axios calls)
+* **4.2. State Caching:** Generate the code from the AST. Write the `.js` file and a `.metadata.json` sidecar to disk. This completes the "Map" phase for a single file.
+* **🛑 Success Gate:** The success criteria defined in [TESTING.md (Phase 4)](file:///home/guid/projects/cartographer/v1/TESTING.md#phase-4-local-graph-extraction) MUST be met, and all unit tests must pass, before this phase is considered complete.
 
-* **2.1. Rule Selection:** Curate the specific Wakaru transformation rules relevant to Humanify (prioritizing `un-async-await`, `un-jsx`, `un-sequence-expression`).
-* **2.2. Integration:** Implement the `sanitizeCode()` function within the new pre-processing stage to run these AST transformations.
-* **2.3. Prompt Optimization:** Adjust the LLM system prompt. Since the code is now structurally cleaner, instructions regarding "fixing syntax" can be removed to focus purely on "naming."
+### **Phase 5: Graph Aggregation (The "Reduce" Phase)**
+* **5.1. enhanced-resolve Integration:** Create a robust path resolver that can accurately trace `require(482)` to Webcrack's unbundled artifacts.
+* **5.2. Global Stitching:** Read all `.metadata.json` sidecars and construct the final `module-graph.json`, `call-graph.json`, and `api-surface.json`.
+* **🛑 Success Gate:** The success criteria defined in [TESTING.md (Phase 5)](file:///home/guid/projects/cartographer/v1/TESTING.md#phase-5-graph-aggregation) MUST be met, and all unit tests must pass, before this phase is considered complete.
 
-### **Phase 3: Static Analysis & Cost Optimization**
-
-*Goal: Reduce LLM token costs and improve accuracy by using Wakaru’s heuristic renaming.*
-
-* **3.1. Smart Rename Integration:** Implement Wakaru’s `smart-rename` rule after the syntax cleanup but *before* the LLM step.
-* **3.2. Context Injection:** Pass any statically discovered names (e.g., `window`, `document`, React hooks) to the LLM context so it doesn't try to guess them again.
-* **3.3. Performance Benchmarking:** Measure the reduction in token usage per file to quantify cost savings.
-
-### **Phase 4: Module Intelligence (The "Nerves")**
-
-*Goal: Enable Humanify to understand relationships between files, not just code within a single file.*
-
-* **4.1. Module Mapping:** Integrate Wakaru’s `unpacker` logic (or adapt existing Webcrack logic) to generate a reliable ID-to-Filepath map.
-* **4.2. Cross-Reference Resolution:** Create a resolver that translates opaque imports (e.g., `require(482)`) into readable file paths (e.g., `import './utils/auth.js'`).
-* **4.3. Graph Data Structure:** Define the JSON schema for storing the project-wide dependency graph.
-
-### **Phase 5: The Call Graph Implementation**
-
-*Goal: Build the logic that tracks function calls across the now-renamed codebase.*
-
-* **5.1. Post-Renaming Visitor:** Create a Babel visitor that runs *after* the LLM has renamed the functions.
-* **5.2. Call Extraction Logic:** Implement logic to detect function definitions and function calls (both local and imported).
-* **5.3. Graph Assembly:** Synthesize the "Module Intelligence" (Phase 4) with the "Function Calls" (Phase 5.2) to link `FileA:functionX` to `FileB:functionY`.
-
-### **Phase 6: CLI Experience & Visualization**
-
-*Goal: Expose the new data to the user in a way that fits a terminal environment.*
-
-* **6.1. Interactive CLI Command:** Implement `humanify graph [entry-file]` to display a tree view of function calls in the terminal.
-* **6.2. Export Functionality:** Add support for `--format mermaid` or `--format dot` to allow users to generate visual diagrams for documentation.
-* **6.3. Documentation:** Update README with the new workflow and graph features.
+### **Phase 6: CLI & Local Dashboard**
+* **6.1. CLI Tooling:** Expose `humanify run <dir>` (runs pipeline) and `humanify graph` (ASCII traces).
+* **6.2. Express Server:** Serve a local React SPA that reads the generated files to render the visual graph.
+* **🛑 Success Gate:** The success criteria defined in [TESTING.md (Phase 6)](file:///home/guid/projects/cartographer/v1/TESTING.md#phase-6-cli--local-dashboard) MUST be met before this phase is considered complete.
 
 # implementation plan
-%%
-Here is the strategic execution plan for implementing the 6-phase Wakaru integration.
 
-This plan is designed for a lead engineer or development team to use as a roadmap. It defines how to manage the repository, structure the pull requests, handle testing, and sequence the releases to minimize risk and ensure steady progress.
-%%
 ## Humanify + Wakaru Integration: Project Execution Plan
 
 **Objective:** Systematically execute the 6-phase Wakaru integration using a structured, iterative approach that protects the stability of the `humanify` `main` branch.
