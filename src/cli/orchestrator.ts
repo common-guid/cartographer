@@ -2,13 +2,14 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { BabelASTService } from '../services/ast/babel-core.js';
 import { WakaruSanitizer } from '../services/sanitizer/wakaru-service.js';
-import { LLMRenameService, LLMProvider } from '../services/llm/rename-service.js';
+import { HumanifyService } from '../services/llm/humanify-service.js';
 import { ASTExtractorService } from '../services/graph/extractor-service.js';
 
 export interface OrchestratorConfig {
   outputDir: string;
   useSanitizer: boolean;
   useHeuristicNaming: boolean;
+  useLLMRename: boolean;
 }
 
 export class PipelineOrchestrator {
@@ -16,23 +17,22 @@ export class PipelineOrchestrator {
   private sanitizer: WakaruSanitizer;
   private extractor = new ASTExtractorService();
   private config: OrchestratorConfig;
-  private renameService: LLMRenameService;
+  private humanifyService = new HumanifyService();
 
   constructor(
-    llmProvider: LLMProvider,
     config: Partial<OrchestratorConfig> = {}
   ) {
     this.config = {
       outputDir: './dist-output',
       useSanitizer: true,
       useHeuristicNaming: true,
+      useLLMRename: true,
       ...config
     };
     this.sanitizer = new WakaruSanitizer({
       enabled: this.config.useSanitizer,
       useHeuristicNaming: this.config.useHeuristicNaming
     });
-    this.renameService = new LLMRenameService(this.astService, llmProvider);
   }
 
   async processFile(filepath: string, relativePath: string): Promise<string> {
@@ -45,17 +45,20 @@ export class PipelineOrchestrator {
     const sanitized = await this.sanitizer.transform(rawCode, filepath);
     const cleanCode = sanitized.code;
 
-    // 3. Centralized AST Parsing (String -> AST)
-    const ast = this.astService.parseCode(cleanCode);
+    // 3. Humanify LLM Renaming (String -> String)
+    let renamedCode = cleanCode;
+    if (this.config.useLLMRename) {
+      renamedCode = await this.humanifyService.rename(cleanCode);
+    }
 
-    // 4. LLM Renaming (AST -> renamed AST)
-    await this.renameService.renameIdentifiers(ast, cleanCode);
+    // 4. AST Parsing of renamed code (String -> AST)
+    const ast = this.astService.parseCode(renamedCode);
 
     // 5. Extract metadata from renamed AST (AST -> metadata)
     const metadata = this.extractor.extractMetadata(ast, relativePath);
 
-    // 6. Generate final code
-    const finalCode = this.astService.generateCode(ast);
+    // 6. Final code is the renamed code string
+    const finalCode = renamedCode;
 
     // 7. Ensure output directory exists and write JS file + .metadata.json sidecar
     const outputPath = path.join(this.config.outputDir, relativePath);

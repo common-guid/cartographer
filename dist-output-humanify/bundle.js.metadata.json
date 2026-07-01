@@ -1,0 +1,1040 @@
+{
+  "id": "bundle.js",
+  "imports": [],
+  "exports": [],
+  "definedFunctions": [
+    {
+      "id": "bundle.js:add",
+      "name": "add",
+      "line": 4
+    },
+    {
+      "id": "bundle.js:multiply",
+      "name": "multiply",
+      "line": 7
+    },
+    {
+      "id": "bundle.js:circleArea",
+      "name": "circleArea",
+      "line": 10
+    },
+    {
+      "id": "bundle.js:clamp",
+      "name": "clamp",
+      "line": 13
+    },
+    {
+      "id": "bundle.js:getType",
+      "name": "getType",
+      "line": 16
+    },
+    {
+      "id": "bundle.js:item",
+      "name": "item",
+      "line": 24
+    },
+    {
+      "id": "bundle.js:unknownValue",
+      "name": "unknownValue",
+      "line": 33
+    },
+    {
+      "id": "bundle.js:unknownVariable",
+      "name": "unknownVariable",
+      "line": 50
+    },
+    {
+      "id": "bundle.js:placeholder",
+      "name": "placeholder",
+      "line": 87
+    },
+    {
+      "id": "bundle.js:value",
+      "name": "value",
+      "line": 95
+    },
+    {
+      "id": "bundle.js:createGeneratorObject",
+      "name": "createGeneratorObject",
+      "line": 101
+    },
+    {
+      "id": "bundle.js:updateState",
+      "name": "updateState",
+      "line": 125
+    },
+    {
+      "id": "bundle.js:Generator",
+      "name": "Generator",
+      "line": 187
+    },
+    {
+      "id": "bundle.js:prototypeConstructor",
+      "name": "prototypeConstructor",
+      "line": 188
+    },
+    {
+      "id": "bundle.js:step",
+      "name": "step",
+      "line": 189
+    },
+    {
+      "id": "bundle.js:_____value",
+      "name": "_____value",
+      "line": 195
+    },
+    {
+      "id": "bundle.js:s",
+      "name": "s",
+      "line": 220
+    },
+    {
+      "id": "bundle.js:defineGeneratorMethod",
+      "name": "defineGeneratorMethod",
+      "line": 228
+    },
+    {
+      "id": "bundle.js:_placeholder",
+      "name": "_placeholder",
+      "line": 242
+    },
+    {
+      "id": "bundle.js:y",
+      "name": "y",
+      "line": 253
+    },
+    {
+      "id": "bundle.js:_value",
+      "name": "_value",
+      "line": 264
+    },
+    {
+      "id": "bundle.js:_typeof",
+      "name": "_typeof",
+      "line": 289
+    },
+    {
+      "id": "bundle.js:__value",
+      "name": "__value",
+      "line": 298
+    },
+    {
+      "id": "bundle.js:resume",
+      "name": "resume",
+      "line": 304
+    },
+    {
+      "id": "bundle.js:throwHandler",
+      "name": "throwHandler",
+      "line": 307
+    },
+    {
+      "id": "bundle.js:unidentifiedVariable",
+      "name": "unidentifiedVariable",
+      "line": 331
+    },
+    {
+      "id": "bundle.js:delta",
+      "name": "delta",
+      "line": 334
+    },
+    {
+      "id": "bundle.js:w",
+      "name": "w",
+      "line": 350
+    },
+    {
+      "id": "bundle.js:__typeof",
+      "name": "__typeof",
+      "line": 353
+    },
+    {
+      "id": "bundle.js:variableJ",
+      "name": "variableJ",
+      "line": 379
+    },
+    {
+      "id": "bundle.js:identifierNotFound_S",
+      "name": "identifierNotFound_S",
+      "line": 382
+    },
+    {
+      "id": "bundle.js:_getType",
+      "name": "_getType",
+      "line": 406
+    },
+    {
+      "id": "bundle.js:wrapGenerator",
+      "name": "wrapGenerator",
+      "line": 412
+    },
+    {
+      "id": "bundle.js:setOffset",
+      "name": "setOffset",
+      "line": 436
+    },
+    {
+      "id": "bundle.js:_Generator",
+      "name": "_Generator",
+      "line": 498
+    },
+    {
+      "id": "bundle.js:baseClass",
+      "name": "baseClass",
+      "line": 499
+    },
+    {
+      "id": "bundle.js:_step",
+      "name": "_step",
+      "line": 500
+    },
+    {
+      "id": "bundle.js:createGeneratorRuntime",
+      "name": "createGeneratorRuntime",
+      "line": 506
+    },
+    {
+      "id": "bundle.js:_add",
+      "name": "_add",
+      "line": 531
+    },
+    {
+      "id": "bundle.js:_defineGeneratorMethod",
+      "name": "_defineGeneratorMethod",
+      "line": 539
+    },
+    {
+      "id": "bundle.js:getValue",
+      "name": "getValue",
+      "line": 553
+    },
+    {
+      "id": "bundle.js:_clamp",
+      "name": "_clamp",
+      "line": 562
+    },
+    {
+      "id": "bundle.js:_",
+      "name": "_",
+      "line": 568
+    },
+    {
+      "id": "bundle.js:nextHandler",
+      "name": "nextHandler",
+      "line": 621
+    },
+    {
+      "id": "bundle.js:_throwHandler",
+      "name": "_throwHandler",
+      "line": 624
+    }
+  ],
+  "calls": [
+    {
+      "from": "bundle.js:circleArea",
+      "to": "multiply",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:circleArea",
+      "to": "multiply",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:getType",
+      "to": "getType",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:item",
+      "to": "Object.defineProperty",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:item",
+      "to": "unknownValue",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:unknownValue",
+      "to": "getType",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:unknownValue",
+      "to": "_toPrimitiveMethod.call",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:unknownValue",
+      "to": "getType",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:unknownValue",
+      "to": "String",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:unknownValue",
+      "to": "getType",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:unknownVariable",
+      "to": "add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:unknownVariable",
+      "to": "userName.split",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:root",
+      "to": "add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:root",
+      "to": "item",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:root",
+      "to": "Object.defineProperty",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:placeholder",
+      "to": "placeholder",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorObject",
+      "to": "Object.create",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorObject",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorObject",
+      "to": "updateState.bind",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorObject",
+      "to": "TypeError",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorObject",
+      "to": "updateState",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorObject",
+      "to": "updateState",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorObject",
+      "to": "____value.call",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorObject",
+      "to": "TypeError",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorObject",
+      "to": "____value.call",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorObject",
+      "to": "TypeError",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorObject",
+      "to": "____step.call",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:value",
+      "to": "____value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:value",
+      "to": "____value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:value",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:value",
+      "to": "Object.create",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_____value",
+      "to": "Object.setPrototypeOf",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_____value",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_____value",
+      "to": "Object.create",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:value",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:value",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:value",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:value",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:value",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:value",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:value",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:s",
+      "to": "defineProperty",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:defineGeneratorMethod",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:s",
+      "to": "defineProperty",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:s",
+      "to": "defineGeneratorMethod",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:s",
+      "to": "defineGeneratorMethod",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:s",
+      "to": "defineGeneratorMethod",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:s",
+      "to": "s",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_placeholder",
+      "to": "Object.keys",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_placeholder",
+      "to": "Object.getOwnPropertySymbols",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_placeholder",
+      "to": "symbols.filter",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_placeholder",
+      "to": "Object.getOwnPropertyDescriptor",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:y",
+      "to": "_placeholder",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:y",
+      "to": "Object",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:y",
+      "to": "_value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:y",
+      "to": "Object.defineProperties",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:y",
+      "to": "Object.getOwnPropertyDescriptors",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:y",
+      "to": "_placeholder",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:y",
+      "to": "Object",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:y",
+      "to": "Object.defineProperty",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:y",
+      "to": "Object.getOwnPropertyDescriptor",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_value",
+      "to": "placeholder",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_value",
+      "to": "toPrimitiveMethod.call",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_value",
+      "to": "placeholder",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_value",
+      "to": "String",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_value",
+      "to": "placeholder",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_value",
+      "to": "Object.defineProperty",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_typeof",
+      "to": "__generator.methodName",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_typeof",
+      "to": "___reject",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_typeof",
+      "to": "_resolve",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_typeof",
+      "to": "Promise.resolve",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:__value",
+      "to": "generatorFunction.apply",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:resume",
+      "to": "_typeof",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:throwHandler",
+      "to": "_typeof",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:__value",
+      "to": "resume",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:unidentifiedVariable",
+      "to": "delta.apply",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:delta",
+      "to": "__value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:delta",
+      "to": "value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:delta",
+      "to": "value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:delta",
+      "to": "asyncContext.a",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:delta",
+      "to": "setTimeout",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:delta",
+      "to": "resolve",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:delta",
+      "to": "y",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:delta",
+      "to": "y",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:delta",
+      "to": "reject",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:w",
+      "to": "__typeof.apply",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:__typeof",
+      "to": "__value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:__typeof",
+      "to": "value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:__typeof",
+      "to": "value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:__typeof",
+      "to": "unidentifiedVariable",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:__typeof",
+      "to": "clamp",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:__typeof",
+      "to": "______context.a",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:variableJ",
+      "to": "identifierNotFound_S.apply",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:identifierNotFound_S",
+      "to": "__value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:identifierNotFound_S",
+      "to": "value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:identifierNotFound_S",
+      "to": "value",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:identifierNotFound_S",
+      "to": "Promise.all",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:identifierNotFound_S",
+      "to": "items.map",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:identifierNotFound_S",
+      "to": "_______context.a",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:identifierNotFound_S",
+      "to": "results.map",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:wrapGenerator",
+      "to": "Object.create",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:wrapGenerator",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:wrapGenerator",
+      "to": "setOffset.bind",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:wrapGenerator",
+      "to": "TypeError",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:wrapGenerator",
+      "to": "setOffset",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:wrapGenerator",
+      "to": "setOffset",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:wrapGenerator",
+      "to": "name.call",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:wrapGenerator",
+      "to": "TypeError",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:wrapGenerator",
+      "to": "name.call",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:wrapGenerator",
+      "to": "TypeError",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:wrapGenerator",
+      "to": "statusCode.call",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_getType",
+      "to": "name",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_getType",
+      "to": "name",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_getType",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_getType",
+      "to": "Object.create",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorRuntime",
+      "to": "Object.setPrototypeOf",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorRuntime",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:createGeneratorRuntime",
+      "to": "Object.create",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_getType",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_getType",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_getType",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_getType",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_getType",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_getType",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_getType",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_add",
+      "to": "_defineProperty",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_defineGeneratorMethod",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_add",
+      "to": "_defineProperty",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_add",
+      "to": "_defineGeneratorMethod",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_add",
+      "to": "_defineGeneratorMethod",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_add",
+      "to": "_defineGeneratorMethod",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_add",
+      "to": "_add",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:getValue",
+      "to": "iterator._methodName",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:getValue",
+      "to": "____reject",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:getValue",
+      "to": "__resolve",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:getValue",
+      "to": "Promise.resolve",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_clamp",
+      "to": "formatter.formatFormal",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_clamp",
+      "to": "console.log",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_clamp",
+      "to": "console.log",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_clamp",
+      "to": "console.log",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "_getType",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "_getType",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "unknownVariable",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "console.log",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "circleArea",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "console.log",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "_circleArea.toFixed",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "w",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "_clamp",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "variableJ",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "console.log",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "_temp.map",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "unusedVariable.getStats",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "console.log",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "_____context.a",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "__context.apply",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:nextHandler",
+      "to": "getValue",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_throwHandler",
+      "to": "getValue",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "nextHandler",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:_",
+      "to": "_.apply",
+      "type": "internal"
+    },
+    {
+      "from": "bundle.js:root",
+      "to": "_.apply",
+      "type": "internal"
+    }
+  ],
+  "apiSinks": []
+}
