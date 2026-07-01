@@ -6,6 +6,7 @@ import { PipelineOrchestrator } from './orchestrator.js';
 import { ReducerService } from '../services/graph/reducer-service.js';
 import { startServer } from '../explorer/server.js';
 import { LLMProvider } from '../services/llm/rename-service.js';
+import { GeminiLLMProvider } from '../services/llm/gemini-provider.js';
 import { GraphPresenter } from '../services/callgraph/presenter.js';
 import { CallGraphData } from '../services/callgraph/types.js';
 
@@ -88,7 +89,16 @@ program
 
       console.log(`[CLI] Found ${allFiles.length} JavaScript file(s) to process.`);
 
-      const llmProvider = new HeuristicLLMProvider();
+      let llmProvider: LLMProvider;
+      if (provider === 'gemini') {
+        const apiKey = process.env.GEMINI_API_KEY || '';
+        const model = process.env.LLM_MODEL || 'gemini-1.5-flash';
+        llmProvider = new GeminiLLMProvider(apiKey, model);
+        console.log(`[CLI] Instantiated GeminiLLMProvider with model: ${model}`);
+      } else {
+        llmProvider = new HeuristicLLMProvider();
+        console.log(`[CLI] Instantiated HeuristicLLMProvider`);
+      }
       const orchestrator = new PipelineOrchestrator(llmProvider, {
         outputDir,
         useSanitizer: options.sanitizer !== false,

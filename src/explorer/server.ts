@@ -2,6 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export function startServer(outputDir: string, port = 3000) {
   const app = express();
@@ -64,74 +68,13 @@ export function startServer(outputDir: string, port = 3000) {
     }
   });
 
-  app.get('/', (req, res) => {
-    res.send(`
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>JS Cartographer Explorer</title>
-        <style>
-          body {
-            background-color: #0b0f19;
-            color: #f3f4f6;
-            font-family: 'Inter', system-ui, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-          }
-          h1 {
-            color: #38bdf8;
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-          }
-          p {
-            font-size: 1.2rem;
-            color: #9ca3af;
-            margin-bottom: 2rem;
-          }
-          .card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2.5rem;
-            border-radius: 1rem;
-            text-align: center;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-          }
-          .btn {
-            background: linear-gradient(135deg, #0ea5e9, #2563eb);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.8rem;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-          }
-          .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.4);
-          }
-        </style>
-      </head>
-      <body>
-        <div class="card">
-          <h1>JS Cartographer</h1>
-          <p>Local Explorer Server Running on Port ${port}</p>
-          <a class="btn" href="/api/graphs" target="_blank">View Graph API Data</a>
-        </div>
-      </body>
-      </html>
-    `);
+  const clientDir = path.resolve(__dirname, 'client');
+  app.use(express.static(clientDir));
+  app.get(/.*/, (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(clientDir, 'index.html'));
   });
 
   return app.listen(port, '0.0.0.0', () => {
