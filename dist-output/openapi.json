@@ -1,0 +1,9 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "JS Cartographer Extracted API Surface",
+    "version": "1.0.0"
+  },
+  "servers": [],
+  "paths": {}
+}

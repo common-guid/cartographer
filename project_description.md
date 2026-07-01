@@ -185,7 +185,7 @@ Statically extracts endpoints, request payloads, and query structures:
 ## 5. Visualizer and Web Explorer Architecture
 
 ### 5.1. Backend Express Server (`src/explorer/server.ts`)
-Launches on `127.0.0.1` and hosts the static React application along with API endpoints:
+Launches on `0.0.0.0` and hosts the static React application along with API endpoints:
 - `GET /api/files`: Lists files recursively (with directory traversal validation `isPathSafe`).
 - `GET /api/file?path=<relative>`: Retrieves content of a specific file.
 - `GET /api/graphs`: Serves `module-graph.json`, `call-graph.json`, and `api-surface.json` as a single payload.
