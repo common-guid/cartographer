@@ -4,12 +4,17 @@ import { BabelASTService } from '../services/ast/babel-core.js';
 import { WakaruSanitizer } from '../services/sanitizer/wakaru-service.js';
 import { HumanifyService } from '../services/llm/humanify-service.js';
 import { ASTExtractorService } from '../services/graph/extractor-service.js';
+import { BoilerplateClassifier } from '../services/boilerplate/classifier.js';
+import { AppCodeExtractor } from '../services/boilerplate/extractor.js';
+import { RenameMapBuilder } from '../services/boilerplate/rename-map-builder.js';
+import { Reintegrator } from '../services/boilerplate/reintegrator.js';
 
 export interface OrchestratorConfig {
   outputDir: string;
   useSanitizer: boolean;
   useHeuristicNaming: boolean;
   useLLMRename: boolean;
+  useBoilerplateFilter: boolean;
 }
 
 export class PipelineOrchestrator {
@@ -27,6 +32,7 @@ export class PipelineOrchestrator {
       useSanitizer: true,
       useHeuristicNaming: true,
       useLLMRename: true,
+      useBoilerplateFilter: process.env.BOILERPLATE_FILTER_ENABLED !== 'false',
       ...config
     };
     this.sanitizer = new WakaruSanitizer({
@@ -48,7 +54,49 @@ export class PipelineOrchestrator {
     // 3. Humanify LLM Renaming (String -> String)
     let renamedCode = cleanCode;
     if (this.config.useLLMRename) {
-      renamedCode = await this.humanifyService.rename(cleanCode);
+      if (this.config.useBoilerplateFilter) {
+        try {
+          const fullAST = this.astService.parseCode(cleanCode);
+          const classifier = new BoilerplateClassifier();
+          const filterResult = classifier.classify(fullAST, cleanCode);
+
+          console.log(
+            `[Filter] ${filterResult.stats.boilerplateNodes}/${filterResult.stats.totalNodes} nodes classified as boilerplate. ~${filterResult.stats.estimatedTokensSaved.toLocaleString()} tokens saved.`
+          );
+
+          const extractor = new AppCodeExtractor();
+          const { appCode, appAST } = extractor.extract(fullAST, filterResult);
+
+          if (appCode.trim()) {
+            const renamedAppCode = await this.humanifyService.rename(appCode);
+            const renamedAppAST = this.astService.parseCode(renamedAppCode);
+
+            // Collect boilerplate identifier names to check for conflicts
+            const boilerplateNames = new Set<string>();
+            for (const cn of filterResult.classifiedNodes) {
+              if (cn.classification === 'boilerplate') {
+                this.astService.traverseAst(cn.node as any, {
+                  Identifier(path: any) {
+                    boilerplateNames.add(path.node.name);
+                  }
+                });
+              }
+            }
+
+            const renameMap = new RenameMapBuilder().build(appAST, renamedAppAST, boilerplateNames);
+            const mergedAST = new Reintegrator().reintegrate(fullAST, renameMap);
+            renamedCode = this.astService.generateCode(mergedAST);
+          } else {
+            console.log('[Filter] No app logic nodes detected. Skipping renaming.');
+            renamedCode = cleanCode;
+          }
+        } catch (filterError) {
+          console.warn('[Filter] Boilerplate filter failed. Falling back to full file renaming.', filterError);
+          renamedCode = await this.humanifyService.rename(cleanCode);
+        }
+      } else {
+        renamedCode = await this.humanifyService.rename(cleanCode);
+      }
     }
 
     // 4. AST Parsing of renamed code (String -> AST)

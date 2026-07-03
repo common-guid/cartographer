@@ -164,7 +164,7 @@ export class HumanifyService {
       args.push('-m', model || 'agy');
     }
 
-    args.push('--context-size', '40000');
+    args.push('--context-size', '2000');
     
     // Read input from stdin, write to stdout
     args.push('-');
