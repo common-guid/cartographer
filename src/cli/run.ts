@@ -134,6 +134,9 @@ async function getJsFilesRecursive(dir: string): Promise<string[]> {
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
+      if (entry.name === 'node_modules' || entry.name === '.git' || entry.name === 'dist-output' || entry.name === 'dist-output-e2e') {
+        continue;
+      }
       results.push(...(await getJsFilesRecursive(fullPath)));
     } else if (entry.isFile() && (entry.name.endsWith('.js') || entry.name.endsWith('.jsx'))) {
       results.push(fullPath);

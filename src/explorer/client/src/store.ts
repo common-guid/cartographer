@@ -137,3 +137,8 @@ export const useStore = create<ExplorerState>((set, get) => ({
     }
   }
 }));
+
+if (typeof window !== 'undefined') {
+  (window as any).useStore = useStore;
+}
+
