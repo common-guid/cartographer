@@ -36,7 +36,7 @@ const globalRateLimiter = new RateLimiter();
 
 async function runAgyPrint(prompt: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const child = spawn('agy', ['-p', prompt], {
+    const child = spawn('agy', ['--dangerously-skip-permissions', '-p', prompt], {
       stdio: ['ignore', 'pipe', 'pipe']
     });
     

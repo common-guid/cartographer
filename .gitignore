@@ -36,7 +36,5 @@ lerna-debug.log*
 Thumbs.db
 
 fixtures/
-package.json
-package-lock.json
 screenshot.png
 dist-output*

@@ -82,6 +82,26 @@ program
   });
 
 program
+  .command('serve <directory>')
+  .description('Start the visualizer dashboard server on an already processed directory')
+  .option('-p, --port <number>', 'Port for the local dashboard server (defaults to $PORT or 3000)')
+  .action(async (directory, options) => {
+    try {
+      const outputDir = path.resolve(directory);
+      const port = parseInt(options.port || process.env.PORT || '3000', 10);
+
+      console.log(`[CLI] Starting visualizer dashboard...`);
+      console.log(`[CLI] Data Directory:   ${outputDir}`);
+      console.log(`[CLI] Visualizer Port:  ${port}`);
+
+      startServer(outputDir, port);
+    } catch (error: any) {
+      console.error(`❌ CLI serve error: ${error.message}`);
+      process.exit(1);
+    }
+  });
+
+program
   .command('graph <directory>')
   .description('Visualize the call graph of a deobfuscated project')
   .option('-e, --entry <id>', 'Specific function ID to trace (e.g., "src/main.js:init")')

@@ -1,0 +1,40 @@
+{
+  "name": "cartographer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/cli/run.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && npm run --prefix src/explorer/client build",
+    "test": "vitest run",
+    "test:visual": "node tests/visual-validation.js",
+    "start": "node dist/cli/run.js",
+    "postinstall": "node scripts/install-humanify.js"
+  },
+  "dependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/generator": "^7.29.7",
+    "@babel/parser": "^7.29.7",
+    "@babel/traverse": "^7.29.7",
+    "@wakaru/unminify": "^0.2.2",
+    "commander": "^15.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "enhanced-resolve": "^5.24.1",
+    "express": "^5.2.1",
+    "p-limit": "^7.3.0",
+    "prettier": "^3.9.4",
+    "puppeteer": "^25.2.1"
+  },
+  "devDependencies": {
+    "@types/babel__core": "^7.20.5",
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__traverse": "^7.28.0",
+    "@types/cors": "^2.8.19",
+    "@types/enhanced-resolve": "^3.0.7",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.0.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  }
+}

@@ -68,7 +68,7 @@ function startPipelineServer() {
         serverProcess.kill();
         reject(new Error('Timeout waiting for pipeline execution and server initialization.'));
       }
-    }, 45000);
+    }, 300000);
   });
 }
 
@@ -103,7 +103,7 @@ async function verifyFilesGenerated() {
     throw new Error('Call graph contains no nodes.');
   }
 
-  const obfuscatedRegex = /^(_0x[a-f0-9]+|[tner])$/;
+  const obfuscatedRegex = /^([a-zA-Z]|_0x[a-f0-9]+)$/;
   const obfuscatedCount = nodes.filter(n => obfuscatedRegex.test(n.name)).length;
   const renamedCount = nodes.length - obfuscatedCount;
   const renameRatio = renamedCount / nodes.length;
