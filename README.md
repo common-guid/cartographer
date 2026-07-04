@@ -12,7 +12,7 @@ JS Cartographer leverages a **Map-Reduce In-Memory Pipeline** designed for ESM c
 
 1. **Unbundling & Recovery (Optional / Map Phase Start):** Raw Webpack/CommonJS bundles can be pre-processed to split modules.
 2. **Wakaru AST Sanitization:** Rebuilds async/await state machines, ES6 classes, template literals, Yoda conditions, and splits sequence/merged variables.
-3. **Identifier Filtering:** Optimization layer that filters out standard global scopes, DOM bindings, and pre-existing descriptive variables to reduce LLM tokens by 40-60%.
+3. **AST-based Boilerplate/Polyfill Filtering:** Optimization layer that isolates application logic from framework bootstrap wrappers, regenerator runtimes, and transpilation helpers (e.g. `_typeof`, `_classCallCheck`, `_createClass`) to reduce code size sent to the LLM by 60-80%.
 4. **LLM Naming:** Traverses scopes in descending order of block size to contextually rename remaining obfuscated variables using structured JSON mappings.
 5. **Static Analysis & Local Extraction:** Extracts imports/exports, defined function mappings, call relationships, and network boundaries.
 6. **Graph Reduction (Reduce Phase):** Uses `enhanced-resolve` to canonicalize import paths across modules and stitch files into global module, call, and API surface graphs.
@@ -41,6 +41,7 @@ JS Cartographer uses a `.env` file (loaded via `dotenv`) to manage external API 
    * **`LLM_MODEL`** *(Optional)*: Model name override (e.g. `gemini-1.5-flash` or `gpt-4o`).
    * **`GEMINI_API_KEY`** / **`OPENAI_API_KEY`** / **`OPENROUTER_API_KEY`**: API keys required for cloud LLM providers.
    * **`LOCAL_LLM_PATH`** *(Optional)*: Path to local GGUF model for local mode.
+   * **`BOILERPLATE_FILTER_ENABLED`** *(Optional)*: Enables/disables AST-based framework/polyfill filtering (defaults to `true`).
 
 ### Prerequisites
 * **Node.js**: v18.0.0 or higher
@@ -60,8 +61,8 @@ JS Cartographer uses a `.env` file (loaded via `dotenv`) to manage external API 
 ### Building the Project
 JS Cartographer is built in strict TypeScript. Compile the source code to the `dist/` directory before executing commands:
 ```bash
-   npm run build
-   ```
+npm run build
+```
 
 ---
 
@@ -109,6 +110,35 @@ node dist/cli/run.js graph <output_directory> [options]
   ```bash
   node dist/cli/run.js graph ./readable-src --format mermaid
   ```
+
+### 3. Estimating Costs and Requests (`plan`)
+This command executes a dry-run analysis on a target file or directory. It calculates original vs. processed file sizes, estimates LLM input tokens, counts API requests, and estimates total API costs and duration without sending any code to external LLMs.
+
+```bash
+node dist/cli/run.js plan <input_path> [options]
+```
+
+#### Options:
+* `-o, --output <dir>`: Output directory configuration (to inherit default configs).
+* `--no-sanitizer`: Disables Wakaru structural sanitization in the estimation.
+* `--no-boilerplate-filter`: Disables boilerplate filtering in the estimation.
+
+#### Example:
+To check the execution plan for a webpack bundle file:
+```bash
+node dist/cli/run.js plan fixtures/webpack-hello-world/dist/bundle.js
+```
+
+---
+
+## ⚡ AST Boilerplate / Polyfill Filtering
+
+To minimize API token costs and speed up renaming processing, JS Cartographer includes a custom AST-based classification and extraction service:
+
+- **Isolated Processing:** Rather than sending entire files (which contain regenerator runtimes, helper methods, and bundler bootstraps), the service extracts only the application-logic functions and declarations.
+- **Parallel Renaming Map:** Once the application logic is deobfuscated by `humanify`, the changes are diffed node-for-node and mapped back into the complete AST using scope-safe renaming (updating cross-references in the boilerplate automatically).
+- **Reduces Overhead:** Saves between **60-80%** of tokens on transpiled/bundled targets.
+- **Configuration:** Controlled in `.env` using `BOILERPLATE_FILTER_ENABLED=true/false` or via the `--no-boilerplate-filter` flag.
 
 ---
 

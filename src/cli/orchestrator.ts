@@ -8,6 +8,7 @@ import { BoilerplateClassifier } from '../services/boilerplate/classifier.js';
 import { AppCodeExtractor } from '../services/boilerplate/extractor.js';
 import { RenameMapBuilder } from '../services/boilerplate/rename-map-builder.js';
 import { Reintegrator } from '../services/boilerplate/reintegrator.js';
+import type { FilePlan } from '../services/boilerplate/types.js';
 
 export interface OrchestratorConfig {
   outputDir: string;
@@ -119,5 +120,53 @@ export class PipelineOrchestrator {
     console.log(`[Orchestrator] Saved processed output to ${outputPath}`);
     console.log(`[Orchestrator] Saved metadata to ${metadataPath}`);
     return finalCode;
+  }
+
+  async planFile(filepath: string, relativePath: string): Promise<FilePlan> {
+    const rawCode = await fs.readFile(filepath, 'utf-8');
+    
+    // 1. Sanitization
+    const sanitized = await this.sanitizer.transform(rawCode, filepath);
+    const cleanCode = sanitized.code;
+
+    let appCodeSize = cleanCode.length;
+    let estimatedTokens = 0;
+    let requests = 0;
+
+    if (this.config.useLLMRename) {
+      requests = 1;
+      if (this.config.useBoilerplateFilter) {
+        try {
+          const fullAST = this.astService.parseCode(cleanCode);
+          const classifier = new BoilerplateClassifier();
+          const filterResult = classifier.classify(fullAST, cleanCode);
+          const extractor = new AppCodeExtractor();
+          const { appCode } = extractor.extract(fullAST, filterResult);
+          appCodeSize = appCode.length;
+        } catch (err) {
+          // Fallback to full cleanCode size if parsing/filtering fails
+          appCodeSize = cleanCode.length;
+        }
+      }
+      // Char count / 4 token heuristic
+      estimatedTokens = Math.max(0, Math.ceil(appCodeSize / 4));
+    } else {
+      appCodeSize = 0;
+    }
+
+    const boilerplateFilteredRatio = cleanCode.length > 0 
+      ? (cleanCode.length - appCodeSize) / cleanCode.length 
+      : 0;
+
+    return {
+      filepath,
+      relativePath,
+      originalSize: rawCode.length,
+      sanitizedSize: cleanCode.length,
+      appCodeSize,
+      boilerplateFilteredRatio,
+      estimatedTokens,
+      requests,
+    };
   }
 }

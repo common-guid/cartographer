@@ -31,3 +31,14 @@ export interface FilterStats {
 }
 
 export type RenameMap = Map<string, string>;  // original → renamed
+
+export interface FilePlan {
+  filepath: string;
+  relativePath: string;
+  originalSize: number;      // raw characters
+  sanitizedSize: number;     // characters after Wakaru
+  appCodeSize: number;       // characters sent to humanify
+  boilerplateFilteredRatio: number; // % of boilerplate stripped
+  estimatedTokens: number;   // estimated LLM tokens
+  requests: number;          // number of API requests (0 or 1)
+}
