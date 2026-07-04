@@ -34,9 +34,15 @@ class RateLimiter {
 
 const globalRateLimiter = new RateLimiter();
 
-async function runAgyPrint(prompt: string): Promise<string> {
+async function runAgyPrint(prompt: string, model?: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const child = spawn('agy', ['--dangerously-skip-permissions', '-p', prompt], {
+    const args = ['--dangerously-skip-permissions'];
+    if (model) {
+      args.push('--model', model);
+    }
+    args.push('-p', prompt);
+
+    const child = spawn('agy', args, {
       stdio: ['ignore', 'pipe', 'pipe']
     });
     
@@ -102,9 +108,9 @@ export class HumanifyService {
               console.warn(`[AgyProxy] Warning: Prompt size (${prompt.length} chars, ~${estimatedTokens} tokens) exceeds 10,000 tokens limit.`);
             }
 
-            console.log(`[AgyProxy] Routing prompt to agy CLI...`);
+            console.log(`[AgyProxy] Routing prompt to agy CLI with model: ${data.model || 'default'}...`);
             await globalRateLimiter.acquire();
-            const agyResponse = await runAgyPrint(prompt);
+            const agyResponse = await runAgyPrint(prompt, data.model);
             
             // Ollama expects JSON lines (ndjson) if streaming, or a single JSON if stream=false
             // We'll just return a single chunk with done=true which works for both.
