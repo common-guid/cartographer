@@ -24,8 +24,8 @@ describe('PipelineOrchestrator.planFile', () => {
     expect(plan.appCodeSize).toBeLessThan(plan.sanitizedSize);
     expect(plan.boilerplateFilteredRatio).toBeGreaterThan(0.5);
     expect(plan.boilerplateFilteredRatio).toBeLessThan(1.0);
-    expect(plan.estimatedTokens).toBeGreaterThan(0);
-    expect(plan.requests).toBe(1);
+    expect(plan.requests).toBeGreaterThan(1);
+    expect(plan.estimatedTokens).toBe(plan.requests * 2000);
   });
 
   it('should return estimatedTokens: 0 and requests: 0 when useLLMRename is false (heuristic)', async () => {

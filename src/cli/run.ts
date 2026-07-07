@@ -317,7 +317,8 @@ program
       console.log(`Total Code to LLM:          ${formatSize(totalAppCodeSize)}`);
       console.log(`Average Boilerplate Red.:  ${avgReduction}%`);
       console.log(`Total Estimated Tokens:    ${totalTokens.toLocaleString()}`);
-      console.log(`Total LLM API Requests:    ${totalRequests}`);
+      console.log(`Est. Identifiers to Rename: ${totalRequests.toLocaleString()}`);
+      console.log(`Est. LLM API Calls:         ${totalRequests.toLocaleString()}  (1 call/identifier)`);
       console.log('---------------------------------------------------------');
       console.log(`Estimated API Cost (Input): $${estimatedCost.toFixed(5)} (${provider})`);
       console.log(`Estimated Duration:        ~${totalDuration.toFixed(1)}s`);

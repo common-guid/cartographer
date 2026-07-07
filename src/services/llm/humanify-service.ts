@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import path from 'node:path';
 import fs from 'node:fs';
 import http from 'node:http';
+import { HUMANIFY_CONTEXT_SIZE_TOKENS } from '../../config/constants.js';
 
 class RateLimiter {
   private tokens: number;
@@ -170,7 +171,7 @@ export class HumanifyService {
       args.push('-m', model || 'agy');
     }
 
-    args.push('--context-size', '2000');
+    args.push('--context-size', String(HUMANIFY_CONTEXT_SIZE_TOKENS));
     
     // Read input from stdin, write to stdout
     args.push('-');

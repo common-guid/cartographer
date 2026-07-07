@@ -38,3 +38,4 @@ Thumbs.db
 fixtures/
 screenshot.png
 dist-output*
+test-output*

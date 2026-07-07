@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { file, program } from '@babel/types';
 import { BabelASTService } from '../services/ast/babel-core.js';
 import { WakaruSanitizer } from '../services/sanitizer/wakaru-service.js';
 import { HumanifyService } from '../services/llm/humanify-service.js';
@@ -9,6 +10,8 @@ import { AppCodeExtractor } from '../services/boilerplate/extractor.js';
 import { RenameMapBuilder } from '../services/boilerplate/rename-map-builder.js';
 import { Reintegrator } from '../services/boilerplate/reintegrator.js';
 import type { FilePlan } from '../services/boilerplate/types.js';
+import { countObfuscatedIdentifiers } from '../services/boilerplate/identifier-counter.js';
+import { HUMANIFY_CONTEXT_SIZE_TOKENS } from '../config/constants.js';
 
 export interface OrchestratorConfig {
   outputDir: string;
@@ -76,7 +79,10 @@ export class PipelineOrchestrator {
             const boilerplateNames = new Set<string>();
             for (const cn of filterResult.classifiedNodes) {
               if (cn.classification === 'boilerplate') {
-                this.astService.traverseAst(cn.node as any, {
+                // Wrap bare statements (e.g. FunctionDeclaration from getStatementsToProcess) in a File/Program
+                // so Babel traverse does not require explicit scope/parentPath.
+                const wrapped = file(program([cn.node as any]));
+                this.astService.traverseAst(wrapped, {
                   Identifier(path: any) {
                     boilerplateNames.add(path.node.name);
                   }
@@ -92,7 +98,7 @@ export class PipelineOrchestrator {
             renamedCode = cleanCode;
           }
         } catch (filterError) {
-          console.warn('[Filter] Boilerplate filter failed. Falling back to full file renaming.', filterError);
+          console.warn('[Filter] Boilerplate name collection failed; falling back to full file renaming.', filterError);
           renamedCode = await this.humanifyService.rename(cleanCode);
         }
       } else {
@@ -134,24 +140,40 @@ export class PipelineOrchestrator {
     let requests = 0;
 
     if (this.config.useLLMRename) {
-      requests = 1;
       if (this.config.useBoilerplateFilter) {
         try {
           const fullAST = this.astService.parseCode(cleanCode);
           const classifier = new BoilerplateClassifier();
           const filterResult = classifier.classify(fullAST, cleanCode);
           const extractor = new AppCodeExtractor();
-          const { appCode } = extractor.extract(fullAST, filterResult);
+          const { appCode, appAST } = extractor.extract(fullAST, filterResult);
           appCodeSize = appCode.length;
+
+          // Count unique obfuscated identifiers — this is the number of
+          // rename calls humanify will make (one per unique identifier).
+          requests = countObfuscatedIdentifiers(appAST);
         } catch (err) {
-          // Fallback to full cleanCode size if parsing/filtering fails
+          // Fallback: if parsing/filtering fails, estimate from character count.
+          // Use 1 request per ~80 chars as a rough per-identifier heuristic.
           appCodeSize = cleanCode.length;
+          requests = Math.max(1, Math.ceil(cleanCode.length / 80));
+        }
+      } else {
+        // No boilerplate filter: estimate identifiers from full clean code.
+        try {
+          const fullAST = this.astService.parseCode(cleanCode);
+          requests = countObfuscatedIdentifiers(fullAST);
+        } catch {
+          requests = Math.max(1, Math.ceil(cleanCode.length / 80));
         }
       }
-      // Char count / 4 token heuristic
-      estimatedTokens = Math.max(0, Math.ceil(appCodeSize / 4));
+
+      // Token estimate: each humanify call uses up to HUMANIFY_CONTEXT_SIZE_TOKENS
+      // tokens as its window. The total is bounded by the actual identifier count.
+      estimatedTokens = requests * HUMANIFY_CONTEXT_SIZE_TOKENS;
     } else {
       appCodeSize = 0;
+      requests = 0;
     }
 
     const boilerplateFilteredRatio = cleanCode.length > 0 
