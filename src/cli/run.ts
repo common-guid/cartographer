@@ -38,8 +38,23 @@ program
       console.log(`[CLI] LLM Provider:     ${provider}`);
 
       if (provider !== 'heuristic') {
-        if (provider === 'gemini' && !process.env.GEMINI_API_KEY) {
-          console.warn(`⚠️  Warning: LLM_PROVIDER is set to 'gemini' but GEMINI_API_KEY is not defined in the environment.`);
+        if (provider === 'gemini') {
+          let hasKeys = false;
+          if (process.env.GEMINI_API_KEY) {
+            try {
+              const parsedKeys = JSON.parse(process.env.GEMINI_API_KEY);
+              if (Array.isArray(parsedKeys)) {
+                hasKeys = parsedKeys.length > 0;
+              } else {
+                hasKeys = true;
+              }
+            } catch (e) {
+              hasKeys = true;
+            }
+          }
+          if (!hasKeys) {
+            console.warn(`⚠️  Warning: LLM_PROVIDER is set to 'gemini' but GEMINI_API_KEY is not defined (or is an empty array) in the environment.`);
+          }
         } else if (provider === 'openai' && !process.env.OPENAI_API_KEY) {
           console.warn(`⚠️  Warning: LLM_PROVIDER is set to 'openai' but OPENAI_API_KEY is not defined in the environment.`);
         } else if (provider === 'openrouter' && !process.env.OPENROUTER_API_KEY) {

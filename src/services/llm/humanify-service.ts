@@ -34,6 +34,7 @@ class RateLimiter {
 }
 
 const globalRateLimiter = new RateLimiter();
+let geminiKeyIndex = 0;
 
 async function runAgyPrint(prompt: string, model?: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -86,6 +87,19 @@ export class HumanifyService {
     let proxyServer: http.Server | null = null;
     let actualProvider = provider;
     let env = { ...process.env };
+
+    if (provider === 'gemini' && env.GEMINI_API_KEY) {
+      try {
+        const parsedKeys = JSON.parse(env.GEMINI_API_KEY);
+        if (Array.isArray(parsedKeys) && parsedKeys.length > 0) {
+          const currentKey = parsedKeys[geminiKeyIndex % parsedKeys.length];
+          env.GEMINI_API_KEY = currentKey;
+          geminiKeyIndex++;
+        }
+      } catch (e) {
+        // Not a JSON array, treat it as a single key string.
+      }
+    }
 
     if (provider === 'agy') {
       actualProvider = 'ollama';
