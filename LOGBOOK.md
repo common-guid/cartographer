@@ -28,3 +28,8 @@ Initialised Raindrop tracer in src/observability/tracer.ts, wrapped CLI run & pl
 Changed RAINDROP_WRITE_KEY to empty string by default in tracer.ts, .env, and .env.example, which triggers localOnly=true in the Raindrop SDK and prevents cloud exports/OTLP connection attempts.
 
 ---
+# Monkey-patched OTLPProtoTraceExporter to prevent Traceloop cloud trace errors
+2026-07-11 08:08:37 | master
+Modified tracer.ts to intercept and no-op OTLPProtoTraceExporter.prototype.export calls. This prevents Traceloop's cloud exporter from posting Protobuf telemetry to api.raindrop.ai (which caused 401 Unauthorized errors) and from sending Protobuf to localhost:5899 (which caused 400 Bad Request errors), keeping local JSON tracing active and error-free.
+
+---
