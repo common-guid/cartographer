@@ -80,13 +80,24 @@ export class HumanifyService {
     }
   }
 
-  async rename(code: string): Promise<string> {
+  async rename(code: string, interaction?: any): Promise<string> {
     const provider = this.getProvider();
     const model = process.env.LLM_MODEL;
 
     let proxyServer: http.Server | null = null;
     let actualProvider = provider;
     let env = { ...process.env };
+
+    const toolSpan = interaction?.startToolSpan({
+      name: 'llm_rename',
+      properties: {
+        provider,
+        model: model ?? 'default',
+        inputChars: String(code.length),
+        estimatedTokens: String(Math.ceil(code.length / 4)),
+      },
+      inputParameters: { provider, codeLength: code.length },
+    });
 
     if (provider === 'gemini' && env.GEMINI_API_KEY) {
       try {
@@ -124,8 +135,24 @@ export class HumanifyService {
             }
 
             console.log(`[AgyProxy] Routing prompt to agy CLI with model: ${data.model || 'default'}...`);
-            await globalRateLimiter.acquire();
-            const agyResponse = await runAgyPrint(prompt, data.model);
+
+            const agySpan = interaction?.startToolSpan({
+              name: 'agy_call',
+              properties: { model: data.model ?? 'default' },
+              inputParameters: { promptLength: prompt.length, estimatedTokens },
+            });
+
+            let agyResponse: string;
+            try {
+              await globalRateLimiter.acquire();
+              agyResponse = await runAgyPrint(prompt, data.model);
+              agySpan?.setOutput({ responseLength: agyResponse.length });
+            } catch (err: any) {
+              agySpan?.setError(err);
+              throw err;
+            } finally {
+              agySpan?.end();
+            }
             
             // Ollama expects JSON lines (ndjson) if streaming, or a single JSON if stream=false
             // We'll just return a single chunk with done=true which works for both.
@@ -192,6 +219,12 @@ export class HumanifyService {
 
     console.log(`[HumanifyService] Running: ${this.binaryPath} ${args.join(' ')}`);
 
+    const binarySpan = interaction?.startToolSpan({
+      name: 'humanify_spawn',
+      properties: { binary: this.binaryPath, provider: actualProvider },
+      inputParameters: { inputChars: code.length, args: args.join(' ') },
+    });
+
     return new Promise((resolve, reject) => {
       const child = spawn(this.binaryPath, args, {
         env,
@@ -218,10 +251,21 @@ export class HumanifyService {
         cleanup();
         if (exitCode !== 0) {
           console.warn(`[HumanifyService] Process exited with code ${exitCode}. Error:\n${stderrData}`);
+          const err = new Error(`Process exited with code ${exitCode}. Error: ${stderrData}`);
+          binarySpan?.setError(err);
+          binarySpan?.end();
+          toolSpan?.setOutput({ status: 'fallback_to_original' });
+          toolSpan?.end();
           // Fallback to original code rather than crashing
           resolve(code);
           return;
         }
+
+        binarySpan?.setOutput({ outputChars: stdoutData.length });
+        binarySpan?.end();
+
+        toolSpan?.setOutput({ outputChars: stdoutData.length });
+        toolSpan?.end();
 
         resolve(stdoutData);
       });
@@ -229,6 +273,10 @@ export class HumanifyService {
       child.on('error', (err) => {
         cleanup();
         console.error('[HumanifyService] Failed to start humanify process:', err);
+        binarySpan?.setError(err);
+        binarySpan?.end();
+        toolSpan?.setError(err);
+        toolSpan?.end();
         // Fallback to original code
         resolve(code);
       });

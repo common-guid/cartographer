@@ -18,3 +18,13 @@ Root cause analysis of Babel traverse crash on bare FunctionDeclaration nodes fr
 Wrapped bare Statement nodes (from getStatementsToProcess) in file(program([...])) before traverseAst in the boilerplateNames collection loop (orchestrator.ts). Improved fallback log to be specific. Build succeeds, full test suite (40 tests) passes, and run on the previously-failing test-input-project bundle now emits filter stats without the Babel scope/parentPath error or fallback warning. Per approved grilling decision: minimal fix only (no new walker or safeTraverse API).
 
 ---
+# Instrumented Cartographer with Raindrop Workshop observability
+2026-07-11 07:22:08 | master
+Initialised Raindrop tracer in src/observability/tracer.ts, wrapped CLI run & plan commands in root interactions, added process_file and stage spans in PipelineOrchestrator, added tool spans in HumanifyService for child processes/agy CLI, and appended Raindrop variables to .env and .env.example.
+
+---
+# Disabled Raindrop cloud transmission for pure local-only mode
+2026-07-11 07:47:23 | master
+Changed RAINDROP_WRITE_KEY to empty string by default in tracer.ts, .env, and .env.example, which triggers localOnly=true in the Raindrop SDK and prevents cloud exports/OTLP connection attempts.
+
+---

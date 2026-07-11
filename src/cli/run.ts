@@ -2,11 +2,13 @@ import { Command } from 'commander';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import dotenv from 'dotenv';
+import { randomUUID } from 'node:crypto';
 import { PipelineOrchestrator } from './orchestrator.js';
 import { ReducerService } from '../services/graph/reducer-service.js';
 import { startServer } from '../explorer/server.js';
 import { GraphPresenter } from '../services/callgraph/presenter.js';
 import { CallGraphData } from '../services/callgraph/types.js';
+import { raindrop } from '../observability/tracer.js';
 
 dotenv.config();
 
@@ -25,51 +27,53 @@ program
   .option('--no-heuristic-naming', 'Disable static renaming heuristics')
   .option('-p, --port <number>', 'Port for the local dashboard server (defaults to $PORT or 3000)')
   .action(async (directory, options) => {
+    const inputDir = path.resolve(directory);
+    const outputDir = path.resolve(options.output || process.env.DEFAULT_OUTPUT_DIR || './dist-output');
+    const port = parseInt(options.port || process.env.PORT || '3000', 10);
+    const provider = process.env.LLM_PROVIDER || 'heuristic';
+
+    console.log(`[CLI] Starting JS Cartographer pipeline...`);
+    console.log(`[CLI] Input Directory:  ${inputDir}`);
+    console.log(`[CLI] Output Directory: ${outputDir}`);
+    console.log(`[CLI] Visualizer Port:  ${port}`);
+    console.log(`[CLI] LLM Provider:     ${provider}`);
+
+    if (provider !== 'heuristic') {
+      if (provider === 'gemini' && !process.env.GEMINI_API_KEY) {
+        console.warn(`⚠️  Warning: LLM_PROVIDER is set to 'gemini' but GEMINI_API_KEY is not defined in the environment.`);
+      } else if (provider === 'openai' && !process.env.OPENAI_API_KEY) {
+        console.warn(`⚠️  Warning: LLM_PROVIDER is set to 'openai' but OPENAI_API_KEY is not defined in the environment.`);
+      } else if (provider === 'openrouter' && !process.env.OPENROUTER_API_KEY) {
+        console.warn(`⚠️  Warning: LLM_PROVIDER is set to 'openrouter' but OPENROUTER_API_KEY is not defined in the environment.`);
+      }
+    }
+
+    const allFiles = await getJsFilesRecursive(inputDir);
+    if (allFiles.length === 0) {
+      console.error(`❌ Error: No JavaScript files found in ${inputDir}`);
+      process.exit(1);
+    }
+
+    console.log(`[CLI] Found ${allFiles.length} JavaScript file(s) to process.`);
+
+    const runId = randomUUID();
+    const interaction = raindrop.begin({
+      eventId: runId,
+      event: 'cartographer_run',
+      userId: 'agent',
+      input: `run ${inputDir}`,
+      model: process.env.LLM_MODEL ?? 'heuristic',
+      properties: {
+        provider,
+        fileCount: String(allFiles.length),
+        inputDir,
+        outputDir,
+        useSanitizer: String(options.sanitizer !== false),
+        useHeuristicNaming: String(options.heuristicNaming !== false),
+      },
+    });
+
     try {
-      const inputDir = path.resolve(directory);
-      const outputDir = path.resolve(options.output || process.env.DEFAULT_OUTPUT_DIR || './dist-output');
-      const port = parseInt(options.port || process.env.PORT || '3000', 10);
-      const provider = process.env.LLM_PROVIDER || 'heuristic';
-
-      console.log(`[CLI] Starting JS Cartographer pipeline...`);
-      console.log(`[CLI] Input Directory:  ${inputDir}`);
-      console.log(`[CLI] Output Directory: ${outputDir}`);
-      console.log(`[CLI] Visualizer Port:  ${port}`);
-      console.log(`[CLI] LLM Provider:     ${provider}`);
-
-      if (provider !== 'heuristic') {
-        if (provider === 'gemini') {
-          let hasKeys = false;
-          if (process.env.GEMINI_API_KEY) {
-            try {
-              const parsedKeys = JSON.parse(process.env.GEMINI_API_KEY);
-              if (Array.isArray(parsedKeys)) {
-                hasKeys = parsedKeys.length > 0;
-              } else {
-                hasKeys = true;
-              }
-            } catch (e) {
-              hasKeys = true;
-            }
-          }
-          if (!hasKeys) {
-            console.warn(`⚠️  Warning: LLM_PROVIDER is set to 'gemini' but GEMINI_API_KEY is not defined (or is an empty array) in the environment.`);
-          }
-        } else if (provider === 'openai' && !process.env.OPENAI_API_KEY) {
-          console.warn(`⚠️  Warning: LLM_PROVIDER is set to 'openai' but OPENAI_API_KEY is not defined in the environment.`);
-        } else if (provider === 'openrouter' && !process.env.OPENROUTER_API_KEY) {
-          console.warn(`⚠️  Warning: LLM_PROVIDER is set to 'openrouter' but OPENROUTER_API_KEY is not defined in the environment.`);
-        }
-      }
-
-      const allFiles = await getJsFilesRecursive(inputDir);
-      if (allFiles.length === 0) {
-        console.error(`❌ Error: No JavaScript files found in ${inputDir}`);
-        process.exit(1);
-      }
-
-      console.log(`[CLI] Found ${allFiles.length} JavaScript file(s) to process.`);
-
       const useLLMRename = provider !== 'heuristic';
       const orchestrator = new PipelineOrchestrator({
         outputDir,
@@ -77,6 +81,7 @@ program
         useHeuristicNaming: options.heuristicNaming !== false,
         useLLMRename
       });
+      orchestrator.setInteraction(interaction);
 
       for (const file of allFiles) {
         const relativePath = path.relative(inputDir, file);
@@ -85,13 +90,24 @@ program
 
       console.log(`\n[CLI] Starting Reduce Phase...`);
       const reducer = new ReducerService();
-      await reducer.aggregateAndWrite(outputDir);
+      await interaction.withSpan(
+        { name: 'reduce_phase', properties: { outputDir } },
+        async () => {
+          await reducer.aggregateAndWrite(outputDir);
+        }
+      );
 
       console.log(`\n[CLI] Pipeline execution finished!`);
+      interaction.finish({
+        output: `Processed ${allFiles.length} file(s) → ${outputDir}`,
+      });
+      await raindrop.close();
       startServer(outputDir, port);
 
     } catch (error: any) {
       console.error(`❌ CLI run error: ${error.message}`);
+      interaction.finish({ output: `Error: ${error.message}` });
+      await raindrop.close();
       process.exit(1);
     }
   });
@@ -238,6 +254,15 @@ program
       }
 
       const provider = process.env.LLM_PROVIDER || 'heuristic';
+
+      const interaction = raindrop.begin({
+        eventId: randomUUID(),
+        event: 'cartographer_plan',
+        userId: 'agent',
+        input: `plan ${inputPath}`,
+        properties: { provider, fileCount: String(allFiles.length) },
+      });
+
       const useLLMRename = provider !== 'heuristic';
       const useBoilerplateFilter = options.boilerplateFilter !== false && process.env.BOILERPLATE_FILTER_ENABLED !== 'false';
 
@@ -339,8 +364,19 @@ program
       console.log(`Estimated Duration:        ~${totalDuration.toFixed(1)}s`);
       console.log('=========================================================\n');
 
+      interaction.finish({
+        output: JSON.stringify({
+          totalFiles: allFiles.length,
+          totalTokens,
+          estimatedCost,
+          estimatedDuration: totalDuration,
+        }),
+      });
+      await raindrop.close();
+
     } catch (error: any) {
       console.error(`❌ CLI plan error: ${error.message}`);
+      await raindrop.close();
       process.exit(1);
     }
   });

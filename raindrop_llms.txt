@@ -1,0 +1,56 @@
+# Raindrop
+
+## Docs
+
+- [Agno (Beta)](https://raindrop.ai/docs/integrations/agno.md): Automatic tracing for Agno agents, teams, and workflows with Raindrop
+- [Azure OpenAI (Beta)](https://raindrop.ai/docs/integrations/azure-openai.md): Automatic tracing for Azure OpenAI applications with Raindrop
+- [AWS Bedrock (Beta)](https://raindrop.ai/docs/integrations/bedrock.md): Automatic tracing for AWS Bedrock applications with Raindrop
+- [Claude Agent SDK (Beta)](https://raindrop.ai/docs/integrations/claude-agent-sdk.md): Automatic tracking for the Claude Agent SDK. Wrap once, then pass eventMetadata() on query() calls to capture events and traces across the session.
+- [Claude Code CLI (Beta)](https://raindrop.ai/docs/integrations/claude-code.md): Automatic observability for Claude Code CLI sessions. Install once, then every session, tool call, and prompt is tracked in Raindrop.
+- [Claude Managed Agents (Beta)](https://raindrop.ai/docs/integrations/claude-managed-agents.md): Automatic tracking for Claude Managed Agents. Wrap the Anthropic client once to capture events, traces, and tool call spans from managed agent sessions.
+- [CrewAI (Beta)](https://raindrop.ai/docs/integrations/crewai.md): Automatic tracing for CrewAI multi-agent crews, tasks, and token usage with Raindrop
+- [Deep Agents (Beta)](https://raindrop.ai/docs/integrations/deepagents.md): Automatic tracing for LangChain Deep Agents workflows with Raindrop
+- [DSPy (Beta)](https://raindrop.ai/docs/integrations/dspy.md): Automatic tracing for DSPy modules with Raindrop
+- [Eve (Beta)](https://raindrop.ai/docs/integrations/eve.md): Automatic observability for Vercel's Eve agent framework. Drop in one file and every turn, sub-agent dispatch, model call, and tool call shows up in Raindrop and Workshop.
+- [Google ADK](https://raindrop.ai/docs/integrations/google-adk.md): Automatic tracing for Google ADK agents, tools, and multi-step reasoning with Raindrop
+- [LangChain (Beta)](https://raindrop.ai/docs/integrations/langchain.md): Automatic tracing for LangChain applications with Raindrop
+- [Mastra (Beta)](https://raindrop.ai/docs/integrations/mastra.md): Automatic tracing for Mastra agents with Raindrop
+- [OpenAI Agents SDK (Beta)](https://raindrop.ai/docs/integrations/openai-agents.md): Automatic tracing for OpenAI Agents with Raindrop
+- [OpenCode (Beta)](https://raindrop.ai/docs/integrations/opencode.md): Integrate Raindrop with OpenCode to automatically capture coding sessions, messages, tool calls, and LLM responses in your dashboard.
+- [OpenRouter Agent SDK (Beta)](https://raindrop.ai/docs/integrations/openrouter-agent.md): Automatic tracing for OpenRouter Agent SDK applications with Raindrop
+- [Overview](https://raindrop.ai/docs/integrations/overview.md): Connect Raindrop with your AI frameworks, cloud providers, and developer tools.
+- [Pi Agent (Beta)](https://raindrop.ai/docs/integrations/pi-agent.md): Automatic observability for Pi — the pi.dev coding agent and agent harness — with Raindrop
+- [Pydantic AI (Beta)](https://raindrop.ai/docs/integrations/pydantic-ai.md): Automatic tracing for Pydantic AI agents with Raindrop
+- [Agent Skills](https://raindrop.ai/docs/integrations/skills.md): Install Raindrop's open-source skills so your AI coding assistant can set up, debug, and investigate Raindrop for you.
+- [Strands Agents (Beta)](https://raindrop.ai/docs/integrations/strands.md): Automatic tracing for Strands Agents with Raindrop — captures invocations, model calls, and tool usage via the hook system.
+- [Temporal (Beta)](https://raindrop.ai/docs/integrations/temporal.md): Automatic tracing for Temporal workflows and activities with Raindrop
+- [Vercel AI SDK](https://raindrop.ai/docs/integrations/vercel-ai-sdk.md): Automatic tracking for the Vercel AI SDK. Wrap once, get events and traces for generateText, streamText, generateObject, and streamObject.
+- [Vertex AI (Beta)](https://raindrop.ai/docs/integrations/vertex-ai.md): Automatic tracing for Google Vertex AI / Gen AI applications with Raindrop
+- [Introduction](https://raindrop.ai/docs/introduction.md): Raindrop is the monitoring platform for AI agents. Similar to how Sentry tracks errors in your web apps, Raindrop discovers silent agent failures in production.
+- [MCP Overview](https://raindrop.ai/docs/mcp/overview.md): Query your Raindrop data directly from your AI coding assistant.
+- [Alerts](https://raindrop.ai/docs/platform/alerts.md): Get notifications when your agents fail
+- [Experiments](https://raindrop.ai/docs/platform/experiments.md): A/B test your agents
+- [Search](https://raindrop.ai/docs/platform/search.md): Search for any user or agent interaction
+- [Self Diagnostics](https://raindrop.ai/docs/platform/self-diagnostics.md): Let your AI agents proactively report their own failures
+- [Signals](https://raindrop.ai/docs/platform/signals.md): Signals are ground truth indicators for agent performance.
+- [Trajectories](https://raindrop.ai/docs/platform/trajectories.md): Visualize, search, and debug agent traces. See what your agent actually did.
+- [Triage Agent](https://raindrop.ai/docs/platform/triage-agent.md): An agent that investigates your AI agents in Slack, on the web, and as an MCP.
+- [API Reference](https://raindrop.ai/docs/query-api/api-reference.md): Explore the Query API endpoints
+- [SDK](https://raindrop.ai/docs/query-api/sdk.md): TypeScript and Python SDKs for the Query API
+- [Browser (JavaScript)](https://raindrop.ai/docs/sdk/browser.md): Minimal browser-safe SDK for tracking AI events via /v1/events from web apps.
+- [Go](https://raindrop.ai/docs/sdk/go.md): The Raindrop SDK allows you to track user events and AI interactions in your app. This documentation provides a brief overview of how to use the Go SDK.
+- [HTTP API](https://raindrop.ai/docs/sdk/http-api.md): Here's how you can use the Raindrop API directly, without an SDK
+- [Java (Beta)](https://raindrop.ai/docs/sdk/java.md): The Raindrop Java SDK lets you track user events and AI interactions from JVM applications. This page covers installation, event tracking, and manual tracing.
+- [Python](https://raindrop.ai/docs/sdk/python.md): The Raindrop SDK allows you to track user events and AI interactions in your app. This documentation provides a brief overview of how to use the Python SDK.
+- [Rust (Beta)](https://raindrop.ai/docs/sdk/rust.md): The Raindrop SDK allows you to track user events and AI interactions in your app. This documentation provides a brief overview of how to use the Rust SDK.
+- [TypeScript](https://raindrop.ai/docs/sdk/typescript.md): The Raindrop SDK allows you to track user events and AI interactions in your app. This documentation provides a brief overview of how to use the TypeScript SDK.
+- [Data Security and Privacy](https://raindrop.ai/docs/security/data-security-and-privacy.md): Raindrop's Commitment to Data Security and Privacy
+- [Privacy and PII Redaction](https://raindrop.ai/docs/security/pii-redaction.md): Maintain deep observability while maintaining the privacy of your user's conversations
+- [Privacy Policy](https://raindrop.ai/docs/security/privacy-policy.md)
+- [Terms of Service](https://raindrop.ai/docs/security/terms-of-use.md)
+- [Support](https://raindrop.ai/docs/support.md): Get help from the Raindrop team
+- [Workshop](https://raindrop.ai/docs/workshop/overview.md): A local debugger for AI agents. Watch every token, tool call, and decision stream into your browser as it happens.
+
+## OpenAPI Specs
+
+- [openapi](https://raindrop.ai/docs/api-reference/openapi.json)
