@@ -48,3 +48,8 @@ Created conductor/tracks/e2e_provider_comparison/plan.md and index.md, and linke
 Saved e2e_test_plan.md to conductor/tracks/e2e_provider_comparison/
 
 ---
+# Update track plans with mock mode details
+2026-07-13 06:36:07 | master
+Added Task 2.4 and 2.5 to plan.md, and documented mock mode details in e2e_test_plan.md
+
+---

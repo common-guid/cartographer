@@ -19,6 +19,8 @@ This plan is considered successfully completed when the single command `npm run 
 - [ ] **Task 2.1:** Implement the provider loop that runs `PipelineOrchestrator` on the benchmark files.
 - [ ] **Task 2.2:** Add dynamic `process.env` overrides for `LLM_PROVIDER` and target folders (`dist-output-e2e/<provider>`).
 - [ ] **Task 2.3:** Add API key validation to gracefully log warnings and skip providers (`gemini`, `openrouter`) if keys are absent.
+- [ ] **Task 2.4:** Implement mock offline mode inside `HumanifyService` triggered by `MOCK_LLM=true` that returns mock humanized code via regex replacement on `_0x` patterns.
+- [ ] **Task 2.5:** Bypass API key skipping checks if `MOCK_LLM=true` is enabled, allowing offline validation of the entire E2E comparison pipeline.
 
 ### Phase 3: Diffing and Reporting
 - [ ] **Task 3.1:** Implement timing and size metrics collection.

@@ -22,18 +22,21 @@ This plan is considered successfully completed when the single command `npm run 
 
 ### Step 3.2: Provider Iteration Loop
 For each fixture, the script will loop through the provider matrix:
-1. **Graceful Skipping:**
-   * Check if `GEMINI_API_KEY` is present before running the `gemini` provider.
-   * Check if `OPENROUTER_API_KEY` is present before running the `openrouter` provider.
-   * If a key is missing, log a yellow warning (`"Skipping openrouter: No API key found"`) and `continue` to the next provider.
-2. **Environment Override:**
+1. **Graceful Skipping & Mock Bypass:**
+   * If `process.env.MOCK_LLM === 'true'`, bypass all API key validation checks.
+   * Otherwise, check if `GEMINI_API_KEY` is present before running the `gemini` provider, and check if `OPENROUTER_API_KEY` is present before running `openrouter`.
+   * If a required key is missing, log a yellow warning (`"Skipping openrouter: No API key found"`) and `continue` to the next provider.
+2. **Mock Mode Execution (Inside `HumanifyService`):**
+   * If `process.env.MOCK_LLM === 'true'`, `HumanifyService` will bypass spawning the `humanify` binary entirely.
+   * It will instead return a mock-renamed version of the input JavaScript code by running a regex replacement that maps obfuscated `_0x[a-f0-9]+` identifiers to `mock_var_[a-f0-9]+` variables. This keeps the JS syntactically valid while ensuring the diff output reflects renaming differences.
+3. **Environment Override:**
    * Temporarily set `process.env.LLM_PROVIDER = currentProvider` so the underlying `HumanifyService` picks up the correct backend.
-3. **Execution & Metrics Collection:**
+4. **Execution & Metrics Collection:**
    * Record `startTime`.
    * Initialize a new `PipelineOrchestrator` targeted at `dist-output-e2e/<provider>`.
    * Run the deobfuscation on the current fixture.
    * Record `endTime` and calculate execution duration.
-4. **Data Aggregation:** Read the newly generated output file and save it in memory (along with duration and size) for the final report phase.
+5. **Data Aggregation:** Read the newly generated output file and save it in memory (along with duration and size) for the final report phase.
 
 ### Step 3.3: Diff Generation
 To satisfy the requirement for diffs without cluttering the project with massive dependencies, we will use Node's `child_process.spawnSync` to run `git diff --no-index` between the output of `heuristic` (as our baseline) and the LLM providers (`gemini`, `openrouter`). This provides a standard, readable unified diff directly in the markdown report. 
