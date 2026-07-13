@@ -33,3 +33,18 @@ Changed RAINDROP_WRITE_KEY to empty string by default in tracer.ts, .env, and .e
 Modified tracer.ts to intercept and no-op OTLPProtoTraceExporter.prototype.export calls. This prevents Traceloop's cloud exporter from posting Protobuf telemetry to api.raindrop.ai (which caused 401 Unauthorized errors) and from sending Protobuf to localhost:5899 (which caused 400 Bad Request errors), keeping local JSON tracing active and error-free.
 
 ---
+# Update AGENTS.md with Conductor rules
+2026-07-12 08:03:59 | master
+Added Conductor directory links and workflow guidelines to AGENTS.md
+
+---
+# Initialize Conductor Track for E2E Benchmark
+2026-07-12 08:05:13 | master
+Created conductor/tracks/e2e_provider_comparison/plan.md and index.md, and linked the track to conductor/index.md
+
+---
+# Copy E2E test plan to track directory
+2026-07-12 08:07:14 | master
+Saved e2e_test_plan.md to conductor/tracks/e2e_provider_comparison/
+
+---
