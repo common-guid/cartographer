@@ -53,3 +53,13 @@ Saved e2e_test_plan.md to conductor/tracks/e2e_provider_comparison/
 Added Task 2.4 and 2.5 to plan.md, and documented mock mode details in e2e_test_plan.md
 
 ---
+# E2E Provider Comparison Spec & Plan Review
+2026-07-13 13:18:39 | master
+Reviewed conductor/tracks/e2e_provider_comparison/e2e_test_plan.md and plan.md against the actual codebase. Identified 3 critical spec issues (orchestrator API mismatch, mock-mode production contamination, heuristic provider architecture mismatch), 4 moderate spec issues, and 4 minor suggestions. Plan has 2 critical gaps (no TDD tasks, no acceptance criteria), 5 moderate issues, and 2 minor items. Generated comprehensive review report artifact with 14-item prioritized recommendation matrix.
+
+---
+# Update E2E Test Plan and Spec
+2026-07-13 13:23:44 | master
+Applied corrections to conductor/tracks/e2e_provider_comparison/e2e_test_plan.md and plan.md based on the review report. Fixed API references, mock mode architecture, added TDD test tasks, and clarified acceptance criteria.
+
+---
