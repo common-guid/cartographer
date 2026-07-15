@@ -88,15 +88,10 @@ export class HumanifyService {
     let actualProvider = provider;
     let env = { ...process.env };
 
-    const toolSpan = interaction?.startToolSpan({
+    const toolSpan = interaction?.startGeneration({
       name: 'llm_rename',
-      properties: {
-        provider,
-        model: model ?? 'default',
-        inputChars: String(code.length),
-        estimatedTokens: String(Math.ceil(code.length / 4)),
-      },
-      inputParameters: { provider, codeLength: code.length },
+      model: model ?? 'default',
+      input: code,
     });
 
     if (provider === 'gemini' && env.GEMINI_API_KEY) {
@@ -254,7 +249,7 @@ export class HumanifyService {
           const err = new Error(`Process exited with code ${exitCode}. Error: ${stderrData}`);
           binarySpan?.setError(err);
           binarySpan?.end();
-          toolSpan?.setOutput({ status: 'fallback_to_original' });
+          toolSpan?.setError(err);
           toolSpan?.end();
           // Fallback to original code rather than crashing
           resolve(code);
@@ -264,7 +259,7 @@ export class HumanifyService {
         binarySpan?.setOutput({ outputChars: stdoutData.length });
         binarySpan?.end();
 
-        toolSpan?.setOutput({ outputChars: stdoutData.length });
+        toolSpan?.setOutput(stdoutData);
         toolSpan?.end();
 
         resolve(stdoutData);
