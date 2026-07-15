@@ -1,0 +1,18 @@
+{
+  "name": "webpack-hello-world",
+  "version": "1.0.0",
+  "description": "Test fixture for JS Cartographer — a webpack-bundled app with known source code for deobfuscation validation",
+  "private": true,
+  "scripts": {
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "build:sourcemap": "GENERATE_SOURCEMAP=true webpack --mode production"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.0",
+    "@babel/preset-env": "^7.25.0",
+    "babel-loader": "^9.1.3",
+    "webpack": "^5.93.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

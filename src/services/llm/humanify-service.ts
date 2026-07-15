@@ -82,7 +82,12 @@ export class HumanifyService {
 
   async rename(code: string, interaction?: any): Promise<string> {
     const provider = this.getProvider();
-    const model = process.env.LLM_MODEL;
+    const defaultModels: Record<string, string> = {
+      gemini: 'gemini-2.5-flash-lite',
+      openrouter: 'google/gemma-3-12b-it',
+      anthropic: 'claude-3-5-haiku-20241022'
+    };
+    const model = process.env.LLM_MODEL || defaultModels[provider];
 
     let proxyServer: http.Server | null = null;
     let actualProvider = provider;

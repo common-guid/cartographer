@@ -53,11 +53,17 @@ async function main() {
                 const providerOutputDir = path.join(OUTPUT_DIR, provider);
                 const outputFile = path.join(providerOutputDir, fixture.name);
 
+                const defaultModels = {
+                    gemini: 'gemini-2.5-flash-lite',
+                    openrouter: 'google/gemma-3-12b-it',
+                    anthropic: 'claude-3-5-haiku-20241022'
+                };
+
                 let metrics = {
                     success: false,
                     duration: 0,
                     size: 0,
-                    model: process.env.LLM_MODEL || 'default',
+                    model: process.env.LLM_MODEL || defaultModels[provider] || 'default',
                     error: null
                 };
 
