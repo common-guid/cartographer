@@ -77,4 +77,43 @@ describe('BoilerplateClassifier', () => {
     expect(result.appCodeRatio).toBe(1.0);
     expect(result.stats.estimatedTokensSaved).toBe(0);
   });
+
+  it('should not classify large try/catch structures as short functions or boilerplate', () => {
+    // A dummy try-catch representing application logic that contains common boilerplate strings
+    const code = `
+      try {
+        const dummy = Promise.resolve;
+        const x = dummy.value;
+        const y = dummy.done;
+        // Add 12+ statements to make it definitely not a short function/block
+        let a = 1;
+        a = a + 1;
+        a = a + 2;
+        a = a + 3;
+        a = a + 4;
+        a = a + 5;
+        a = a + 6;
+        a = a + 7;
+        a = a + 8;
+        a = a + 9;
+        a = a + 10;
+        a = a + 11;
+        a = a + 12;
+        a = a + 13;
+        a = a + 14;
+        a = a + 15;
+      } catch (err) {
+        throw err;
+      }
+    `;
+    const ast = astService.parseCode(code);
+    const result = classifier.classify(ast, code);
+
+    // The single TryStatement should be classified as 'app'
+    expect(result.stats.totalNodes).toBe(1);
+    expect(result.stats.boilerplateNodes).toBe(0);
+    expect(result.stats.appNodes).toBe(1);
+    expect(result.classifiedNodes[0].classification).toBe('app');
+  });
 });
+
