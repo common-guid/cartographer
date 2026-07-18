@@ -34,11 +34,11 @@ The task is complete when:
 - [x] **Checkpoint 1:** Finalize implementation and verify unit tests pass. Create checkpoint commit. (16d4883)
 
 ### Phase 2: End-to-End Verification & Manual Validation
-- [~] **Task 2.1:** Execute `plan` command on `fixtures/warp` and verify the output size estimation:
+- [x] **Task 2.1:** Execute `plan` command on `fixtures/warp` and verify the output size estimation: (889b85b)
   ```bash
   node dist/cli/run.js plan fixtures/warp
   ```
-- [~] **Task 2.2:** Execute `run` command on `fixtures/warp` and verify it succeeds and outputs renamed/humanified identifiers in `test-output-warp/bundle.js`.
-- [ ] **Task 2.3:** Run the Visualizer dashboard on port 3325, take a screenshot of the deobfuscated dashboard landing page using Puppeteer, and save the screenshot as `warp_dashboard.png` in the artifact directory.
-- [ ] **Task 2.4:** Create a markdown side-by-side comparison `warp_comparison.md` of a 50-line code snippet from `fixtures/warp/bundle.js` before and after deobfuscation.
-- [ ] **Checkpoint 2:** Complete E2E manual verification and commit the walkthrough.
+- [x] **Task 2.2:** Execute `run` command on `fixtures/warp` and verify it succeeds and outputs renamed/humanified identifiers in `test-output-warp/bundle.js`. (889b85b)
+- [x] **Task 2.3:** Run the Visualizer dashboard on port 3325, take a screenshot of the deobfuscated dashboard landing page using Puppeteer, and save the screenshot as `warp_dashboard.png` in the artifact directory. (889b85b)
+- [x] **Task 2.4:** Create a markdown side-by-side comparison `warp_comparison.md` of a 50-line code snippet from `fixtures/warp/bundle.js` before and after deobfuscation. (889b85b)
+- [x] **Checkpoint 2:** Complete E2E manual verification and commit the walkthrough. (889b85b)
