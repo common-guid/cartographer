@@ -18,3 +18,4 @@ Development tasks are organized into isolated features or work packages called *
 
 * **[Multi-Provider E2E Benchmark](tracks/e2e_provider_comparison/index.md):** (Active) Compare outputs and timing metrics for heuristic, gemini, and openrouter.
 * **[Evaluation Harness & Benchmarking](tracks/evaluation/plan.md):** (Planned) Build phased, tiered evaluation infrastructure for renaming, filtering, and graph/API quality with deterministic gates and visual verification evidence.
+* **[Boilerplate Classification Fix](tracks/boilerplate_classification_fix/index.md):** (Active) Fix try-catch/structural block boilerplate classification bug.
