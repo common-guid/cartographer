@@ -16,4 +16,6 @@ The code conventions used in this project are located in:
 ## 🚀 Active Development Tracks
 Development tasks are organized into isolated features or work packages called **tracks**. Tracks are located under the `conductor/tracks/` folder and include plans, tasks, and completion metrics.
 
-* **[Multi-Provider E2E Benchmark](tracks/e2e_provider_comparison/index.md):** (Active) Compare outputs and timing metrics for heuristic, gemini, and openrouter.
+* **[Multi-Provider E2E Benchmark](tracks/e2e_provider_comparison/index.md):** Compare outputs and timing metrics for heuristic, gemini, and openrouter.
+* **[Boilerplate Classification Fix](tracks/boilerplate_classification_fix/index.md):** (Active) Fix try-catch/structural block boilerplate classification bug.
+
