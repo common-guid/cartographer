@@ -103,3 +103,8 @@ Added verification script usage and exit code details to docs/langfuse_observabi
 Updated AGENTS.md to mandate screenshot recording instructions in implementation and verification plans.
 
 ---
+# Fix TryStatement Boilerplate Classification Bug
+2026-07-18 08:37:15 | feature/langfuse-observability-9883162956618823337
+Modified getStatementCount to recursively evaluate statement counts in nested blocks (try, if, loop, switch) and updated isShortFunction to reject non-function structures. Added tests, Conductor plan, and manual validation scripts.
+
+---
