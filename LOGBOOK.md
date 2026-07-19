@@ -71,5 +71,63 @@ Created docs/e2e_test_providers_walkthrough.md containing step-by-step instructi
 # Update default LLM models
 2026-07-15 08:24:10 | feat/e2e-provider-comparison-4437645273169087442
 Configured provider-specific default models in humanify-service and the test suite: gemini-2.5-flash-lite for Gemini, google/gemma-3-12b-it for OpenRouter, and claude-3-5-haiku-20241022 for Anthropic.
+# Add E2E Provider Comparison Deep Dive documentation
+2026-07-14 06:39:56 | feat/e2e-provider-comparison-4437645273169087442
+Created docs/e2e_provider_comparison_deep_dive.md containing a detailed architectural and usage breakdown of the multi-provider E2E comparison testing feature.
+
+---
+# Add Langfuse observability implementation plan
+2026-07-14 07:06:59 | feat/e2e-provider-comparison-4437645273169087442
+Created docs/langfuse_observability_plan.md outlining the architecture, dependency choices, configuration, and code instrumentation changes required to add Langfuse observability to Cartographer.
+
+---
+# Add Langfuse pre-development setup and testing review report
+2026-07-14 07:26:24 | feat/e2e-provider-comparison-4437645273169087442
+Created docs/langfuse_pre_dev_setup.md covering project creation, API key configuration, langfuse-cli verification methods, and agent productivity tools.
+
+---
+# Install Langfuse AI Skill
+2026-07-14 09:38:58 | feat/e2e-provider-comparison-4437645273169087442
+Installed the Langfuse AI agent skill under .agents/skills/langfuse from github.com/langfuse/skills
+
+---
+# Update Langfuse Observability Plan
+2026-07-14 09:40:52 | feat/e2e-provider-comparison-4437645273169087442
+Corrected the Langfuse observability implementation plan and added detailed CLI verification steps utilizing npx langfuse-cli
+
+---
+# Fix plan file formatting and validation script
+2026-07-14 09:42:50 | feat/e2e-provider-comparison-4437645273169087442
+Closed a code block correctly and fully validated verification steps in docs/langfuse_observability_plan.md
+
+---
+# Add verify script instructions to plan
+2026-07-14 09:46:20 | feat/e2e-provider-comparison-4437645273169087442
+Added verification script usage and exit code details to docs/langfuse_observability_plan.md
+
+---
+# docs(agents): add plan verification screenshot guidelines
+2026-07-14 16:05:21 | feat/e2e-provider-comparison-4437645273169087442
+Updated AGENTS.md to mandate screenshot recording instructions in implementation and verification plans.
+
+---
+# conductor: rewrite evaluation strategy into phased conductor plan
+2026-07-18 07:27:33 | feature/langfuse-observability-9883162956618823337
+Replaced EVALUATION_STRATEGIES.md with a Conductor-aligned phased evaluation strategy including benchmark corpus requirements, tiered (CI/scheduled/LLM) modes, explicit metrics/gates, and mandatory screenshot-based verification steps.
+
+---
+# conductor: add evaluation track checklist
+2026-07-18 07:39:28 | feature/langfuse-observability-9883162956618823337
+Added conductor/tracks/evaluation/plan.md with phased tasks, checkpoints, and success criteria for implementing the evaluation harness. Updated conductor/index.md to include the new evaluation track.
+
+---
+# docs: add evals analysis report file
+2026-07-18 07:43:41 | feature/langfuse-observability-9883162956618823337
+Created evals_analysis_report.md in repo root summarizing assessment of proposed evaluation strategies, feasibility caveats, and recommended phased alternatives.
+
+---
+# docs: rewrite evals analysis report to conversation format
+2026-07-18 07:44:48 | feature/langfuse-observability-9883162956618823337
+Rewrote evals_analysis_report.md to match the previously provided conversation report format, including overall verdict, section-by-section analysis, cross-cutting recommendations, and bottom-line score table.
 
 ---

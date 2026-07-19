@@ -39,7 +39,11 @@ The project uses the `dev-logbook` skill to maintain a history of all codebase c
   ```
 - **Constraint:** Do not wait for the user to ask you to log. This is a mandatory, automated step.
 
+### 2. Plan Verification & Screenshots
+- **Rule:** Whenever developing an implementation plan, verification plan, or any plan that requires some form of testing/verification, you **MUST** (wherever possible) include explicit instructions to capture and record screenshots of the results (e.g. using Puppeteer, browser dev tools, or CLI utilities) for visual review.
+
 ---
+
 
 ## 🚂 Conductor Integration & Workflow
 

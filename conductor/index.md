@@ -17,3 +17,4 @@ The code conventions used in this project are located in:
 Development tasks are organized into isolated features or work packages called **tracks**. Tracks are located under the `conductor/tracks/` folder and include plans, tasks, and completion metrics.
 
 * **[Multi-Provider E2E Benchmark](tracks/e2e_provider_comparison/index.md):** (Active) Compare outputs and timing metrics for heuristic, gemini, and openrouter.
+* **[Evaluation Harness & Benchmarking](tracks/evaluation/plan.md):** (Planned) Build phased, tiered evaluation infrastructure for renaming, filtering, and graph/API quality with deterministic gates and visual verification evidence.
