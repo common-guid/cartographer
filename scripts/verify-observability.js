@@ -12,12 +12,12 @@ function runCliCommand(command) {
 
 console.log('Fetching recent traces from Langfuse...');
 // Ensure we fetch metadata/io fields
-const tracesResponse = runCliCommand('npx langfuse-cli api traces list --limit 5 --fields "core,io" --json');
-const traces = tracesResponse.data || tracesResponse;
+const tracesResponse = runCliCommand('npx langfuse-cli api traces list --limit 100 --fields "core,io" --json');
+const traces = tracesResponse.body?.data || tracesResponse.data || tracesResponse;
 
 const cartographerTrace = traces.find(t => t.name === 'cartographer_run');
 if (!cartographerTrace) {
-  console.error('❌ Fail: Could not find any trace with name "cartographer_run" in the last 5 traces.');
+  console.error('❌ Fail: Could not find any trace with name "cartographer_run" in the last 100 traces.');
   process.exit(1);
 }
 
@@ -27,7 +27,7 @@ console.log(`✅ Success: Found trace "cartographer_run" with ID: ${traceId}`);
 console.log(`Fetching observations for trace: ${traceId}...`);
 // Query all field groups to fully inspect the telemetry details
 const obsResponse = runCliCommand(`npx langfuse-cli api observations list --trace-id "${traceId}" --fields "core,basic,io,usage,model,metadata" --json`);
-const observations = obsResponse.data || obsResponse;
+const observations = obsResponse.body?.data || obsResponse.data || obsResponse;
 
 console.log(`Analyzing ${observations.length} observations...`);
 
