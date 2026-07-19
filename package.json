@@ -7,6 +7,7 @@
   "scripts": {
     "build": "tsc && npm run --prefix src/explorer/client build",
     "test": "vitest run",
+    "test:providers": "node tests/run-provider-comparison.js",
     "test:visual": "node tests/visual-validation.js",
     "start": "node dist/cli/run.js",
     "postinstall": "node scripts/install-humanify.js"

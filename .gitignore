@@ -35,7 +35,10 @@ lerna-debug.log*
 .DS_Store
 Thumbs.db
 
-fixtures/
+fixtures/*
 screenshot.png
 dist-output*
 test-output*
+# E2E outputs
+dist-output-e2e/
+!fixtures/*webpack-hello-world/
