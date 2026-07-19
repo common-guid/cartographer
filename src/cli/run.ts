@@ -8,7 +8,7 @@ import { ReducerService } from '../services/graph/reducer-service.js';
 import { startServer } from '../explorer/server.js';
 import { GraphPresenter } from '../services/callgraph/presenter.js';
 import { CallGraphData } from '../services/callgraph/types.js';
-import { raindrop } from '../observability/tracer.js';
+import { tracer } from '../observability/tracer.js';
 
 dotenv.config();
 
@@ -57,7 +57,7 @@ program
     console.log(`[CLI] Found ${allFiles.length} JavaScript file(s) to process.`);
 
     const runId = randomUUID();
-    const interaction = raindrop.begin({
+    const interaction = tracer.begin({
       eventId: runId,
       event: 'cartographer_run',
       userId: 'agent',
@@ -101,14 +101,15 @@ program
       interaction.finish({
         output: `Processed ${allFiles.length} file(s) → ${outputDir}`,
       });
-      await raindrop.close();
       startServer(outputDir, port);
 
     } catch (error: any) {
       console.error(`❌ CLI run error: ${error.message}`);
       interaction.finish({ output: `Error: ${error.message}` });
-      await raindrop.close();
+      await tracer.shutdown();
       process.exit(1);
+    } finally {
+      await tracer.shutdown();
     }
   });
 
@@ -255,7 +256,7 @@ program
 
       const provider = process.env.LLM_PROVIDER || 'heuristic';
 
-      const interaction = raindrop.begin({
+      const interaction = tracer.begin({
         eventId: randomUUID(),
         event: 'cartographer_plan',
         userId: 'agent',
@@ -372,12 +373,13 @@ program
           estimatedDuration: totalDuration,
         }),
       });
-      await raindrop.close();
 
     } catch (error: any) {
       console.error(`❌ CLI plan error: ${error.message}`);
-      await raindrop.close();
+      await tracer.shutdown();
       process.exit(1);
+    } finally {
+      await tracer.shutdown();
     }
   });
 

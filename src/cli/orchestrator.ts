@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { file, program } from '@babel/types';
-import type { Interaction } from 'raindrop-ai';
+import { InteractionContext } from '../observability/tracer.js';
 import { BabelASTService } from '../services/ast/babel-core.js';
 import { WakaruSanitizer } from '../services/sanitizer/wakaru-service.js';
 import { HumanifyService } from '../services/llm/humanify-service.js';
@@ -28,7 +28,7 @@ export class PipelineOrchestrator {
   private extractor = new ASTExtractorService();
   private config: OrchestratorConfig;
   private humanifyService = new HumanifyService();
-  private interaction?: Interaction;
+  private interaction?: InteractionContext;
 
   constructor(
     config: Partial<OrchestratorConfig> = {}
@@ -47,7 +47,7 @@ export class PipelineOrchestrator {
     });
   }
 
-  setInteraction(interaction: Interaction) {
+  setInteraction(interaction: InteractionContext) {
     this.interaction = interaction;
   }
 
