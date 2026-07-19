@@ -111,23 +111,33 @@ Added verification script usage and exit code details to docs/langfuse_observabi
 Updated AGENTS.md to mandate screenshot recording instructions in implementation and verification plans.
 
 ---
+
 # conductor: rewrite evaluation strategy into phased conductor plan
 2026-07-18 07:27:33 | feature/langfuse-observability-9883162956618823337
 Replaced EVALUATION_STRATEGIES.md with a Conductor-aligned phased evaluation strategy including benchmark corpus requirements, tiered (CI/scheduled/LLM) modes, explicit metrics/gates, and mandatory screenshot-based verification steps.
 
 ---
+
 # conductor: add evaluation track checklist
 2026-07-18 07:39:28 | feature/langfuse-observability-9883162956618823337
 Added conductor/tracks/evaluation/plan.md with phased tasks, checkpoints, and success criteria for implementing the evaluation harness. Updated conductor/index.md to include the new evaluation track.
 
 ---
+
 # docs: add evals analysis report file
 2026-07-18 07:43:41 | feature/langfuse-observability-9883162956618823337
 Created evals_analysis_report.md in repo root summarizing assessment of proposed evaluation strategies, feasibility caveats, and recommended phased alternatives.
 
 ---
+
 # docs: rewrite evals analysis report to conversation format
 2026-07-18 07:44:48 | feature/langfuse-observability-9883162956618823337
 Rewrote evals_analysis_report.md to match the previously provided conversation report format, including overall verdict, section-by-section analysis, cross-cutting recommendations, and bottom-line score table.
+
+---
+
+# Fix TryStatement Boilerplate Classification Bug
+2026-07-18 08:37:15 | feature/langfuse-observability-9883162956618823337
+Modified getStatementCount to recursively evaluate statement counts in nested blocks (try, if, loop, switch) and updated isShortFunction to reject non-function structures. Added tests, Conductor plan, and manual validation scripts.
 
 ---
