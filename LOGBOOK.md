@@ -141,3 +141,8 @@ Rewrote evals_analysis_report.md to match the previously provided conversation r
 Modified getStatementCount to recursively evaluate statement counts in nested blocks (try, if, loop, switch) and updated isShortFunction to reject non-function structures. Added tests, Conductor plan, and manual validation scripts.
 
 ---
+# Merge feature/langfuse-observability-9883162956618823337
+2026-07-20 14:58:54 | master
+Resolved merge conflicts in LOGBOOK.md and conductor/index.md (took master versions for active tracks and deduped boilerplate log entry), completed merge commit into master.
+
+---
