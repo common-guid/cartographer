@@ -18,10 +18,23 @@ function sanitizeMetadata(metadata: any): Record<string, string> {
   return result;
 }
 
+function getParentIds(parent: any) {
+  if (!parent) return {};
+  const isTrace = typeof parent.end !== 'function';
+  return {
+    traceId: isTrace ? parent.id : parent.traceId,
+    parentObservationId: isTrace ? undefined : parent.id,
+  };
+}
+
 export class InteractionContext {
   private activeSpanStorage = new AsyncLocalStorage<any>();
 
-  constructor(private raindropSpan: any, private langfuseSpan: any) {}
+  constructor(
+    private raindropSpan: any,
+    private langfuseSpan: any,
+    private langfuseClient?: Langfuse
+  ) {}
 
   private getActiveSpan() {
     return this.activeSpanStorage.getStore() || this.langfuseSpan;
@@ -33,10 +46,17 @@ export class InteractionContext {
     fn: () => Promise<T>
   ): Promise<T> {
     const parent = this.getActiveSpan();
-    const childLangfuse = parent?.span({
-      name: spanConfig.name,
-      metadata: sanitizeMetadata(spanConfig.properties),
-    });
+    let childLangfuse: any;
+    
+    if (this.langfuseClient && parent) {
+      const ids = getParentIds(parent);
+      childLangfuse = this.langfuseClient.span({
+        name: spanConfig.name,
+        traceId: ids.traceId,
+        parentObservationId: ids.parentObservationId,
+        metadata: sanitizeMetadata(spanConfig.properties),
+      });
+    }
 
     return this.activeSpanStorage.run(childLangfuse, async () => {
       try {
@@ -91,10 +111,16 @@ export class InteractionContext {
       rSpan = this.raindropSpan.startToolSpan(config);
     }
 
-    const lSpan = parent?.span({
-      name: config.name,
-      metadata: sanitizeMetadata(config.properties),
-    });
+    let lSpan: any;
+    if (this.langfuseClient && parent) {
+      const ids = getParentIds(parent);
+      lSpan = this.langfuseClient.span({
+        name: config.name,
+        traceId: ids.traceId,
+        parentObservationId: ids.parentObservationId,
+        metadata: sanitizeMetadata(config.properties),
+      });
+    }
 
     return {
       setOutput: (output: any) => {
@@ -125,11 +151,17 @@ export class InteractionContext {
       });
     }
 
-    const langfuseGen = parent?.generation({
-      name: config.name,
-      model: config.model,
-      input: config.input,
-    });
+    let langfuseGen: any;
+    if (this.langfuseClient && parent) {
+      const ids = getParentIds(parent);
+      langfuseGen = this.langfuseClient.generation({
+        name: config.name,
+        traceId: ids.traceId,
+        parentObservationId: ids.parentObservationId,
+        model: config.model,
+        input: config.input,
+      });
+    }
 
     return {
       setOutput: (output: string) => {
@@ -216,8 +248,9 @@ export class TracerService {
       }),
     });
 
-    return new InteractionContext(raindropTrace, langfuseTrace);
+    return new InteractionContext(raindropTrace, langfuseTrace, this.langfuse);
   }
+
 
   async shutdown() {
     if (this.raindrop) {

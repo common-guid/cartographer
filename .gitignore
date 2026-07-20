@@ -42,3 +42,5 @@ test-output*
 # E2E outputs
 dist-output-e2e/
 !fixtures/*webpack-hello-world/
+test-out
+scratch/

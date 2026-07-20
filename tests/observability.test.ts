@@ -40,8 +40,8 @@ describe('Unified Tracer Service', () => {
 
   it('should wrap execution in withSpan', async () => {
     const mockEnd = vi.fn();
-    const mockSpan = vi.fn().mockReturnValue({ end: mockEnd });
-    vi.spyOn(Langfuse.prototype, 'trace').mockReturnValue({ span: mockSpan } as any);
+    const mockSpan = vi.spyOn(Langfuse.prototype, 'span').mockReturnValue({ end: mockEnd } as any);
+    vi.spyOn(Langfuse.prototype, 'trace').mockReturnValue({ id: '123' } as any);
 
     process.env.LANGFUSE_ENABLED = 'true';
     process.env.LANGFUSE_SECRET_KEY = 'test_sk';
@@ -59,6 +59,8 @@ describe('Unified Tracer Service', () => {
     expect(mockCallback).toHaveBeenCalledTimes(1);
     expect(mockSpan).toHaveBeenCalledWith({
       name: 'test_span',
+      traceId: '123',
+      parentObservationId: undefined,
       metadata: { p: '1' }
     });
     expect(mockEnd).toHaveBeenCalledWith({ output: 'test_result' });
@@ -67,8 +69,8 @@ describe('Unified Tracer Service', () => {
   it('should create generation with proper parameters', () => {
     const mockUpdate = vi.fn();
     const mockEnd = vi.fn();
-    const mockGeneration = vi.fn().mockReturnValue({ update: mockUpdate, end: mockEnd });
-    vi.spyOn(Langfuse.prototype, 'trace').mockReturnValue({ generation: mockGeneration } as any);
+    const mockGeneration = vi.spyOn(Langfuse.prototype, 'generation').mockReturnValue({ update: mockUpdate, end: mockEnd } as any);
+    vi.spyOn(Langfuse.prototype, 'trace').mockReturnValue({ id: '123' } as any);
 
     process.env.LANGFUSE_ENABLED = 'true';
     process.env.LANGFUSE_SECRET_KEY = 'test_sk';
@@ -87,6 +89,8 @@ describe('Unified Tracer Service', () => {
 
     expect(mockGeneration).toHaveBeenCalledWith({
       name: 'test_gen',
+      traceId: '123',
+      parentObservationId: undefined,
       model: 'gpt-4',
       input: 'long input string',
     });

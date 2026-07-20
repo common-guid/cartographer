@@ -1,4 +1,9 @@
+import 'dotenv/config';
 import { execSync } from 'node:child_process';
+
+if (process.env.LANGFUSE_BASE_URL && !process.env.LANGFUSE_HOST) {
+  process.env.LANGFUSE_HOST = process.env.LANGFUSE_BASE_URL;
+}
 
 function runCliCommand(command) {
   try {

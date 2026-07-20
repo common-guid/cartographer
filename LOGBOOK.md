@@ -146,3 +146,38 @@ Modified getStatementCount to recursively evaluate statement counts in nested bl
 Resolved merge conflicts in LOGBOOK.md and conductor/index.md (took master versions for active tracks and deduped boilerplate log entry), completed merge commit into master.
 
 ---
+# Enable Langfuse trace collection in .env
+2026-07-20 15:49:59 | fix-langfuse
+Added LANGFUSE_ENABLED=true to the local environment variables in .env
+
+---
+# Import dotenv in verification script
+2026-07-20 15:51:36 | fix-langfuse
+Added import 'dotenv/config' to scripts/verify-observability.js to ensure environment variables are correctly loaded from .env when running verification
+
+---
+# Set LANGFUSE_HOST in verification script
+2026-07-20 15:51:40 | fix-langfuse
+Mapped process.env.LANGFUSE_HOST to process.env.LANGFUSE_BASE_URL if missing in scripts/verify-observability.js to support the Langfuse CLI
+
+---
+# Fix Langfuse child observation nesting
+2026-07-20 16:10:21 | fix-langfuse
+Modified src/observability/tracer.ts to use the Langfuse client object to create nested spans/generations instead of calling .span() / .generation() directly on trace/span objects, which do not have these methods in the Langfuse Node JS SDK
+
+---
+# Type childLangfuse as any
+2026-07-20 16:10:28 | fix-langfuse
+Added explicit type annotation to childLangfuse variable in tracer.ts to fix TS compilation errors
+
+---
+# Update observability unit tests
+2026-07-20 16:10:42 | fix-langfuse
+Updated tests/observability.test.ts to mock Langfuse.prototype.span and generation instead of trace.span/generation to match the new implementation
+
+---
+# Fix isTrace condition in tracer.ts
+2026-07-20 16:13:18 | fix-langfuse
+Changed getParentIds to check for presence of end function on parent to differentiate trace from span, correcting parentObservationId propagation
+
+---
