@@ -44,7 +44,7 @@ describe('AppCodeExtractor', () => {
     expect(appCode).toContain('var t');
     expect(appCode).toContain('var n');
     expect(appCode).toContain('var e');
-    expect(appCode).toContain('function r');
+    expect(appCode).toContain('function');
 
     // Success Criteria: Does NOT contain known boilerplate fingerprint literals
     expect(appCode).not.toContain('"@@iterator"');

@@ -10,13 +10,22 @@ export const TaskStatus = {
   COMPLETED: 'completed',
 };
 
-export function createTask(id, title, description, status, priority) {
+export function calculateTaskPriority(urgencyScore) {
+  if (urgencyScore > 80) return 'critical';
+  if (urgencyScore > 60) return 'high';
+  if (urgencyScore > 30) return 'medium';
+  return 'low';
+}
+
+export function createTask(id, title, description, status, urgencyScore) {
+  const priority = calculateTaskPriority(urgencyScore);
   return {
     id,
     title,
     description,
     status,
     priority,
+    urgencyScore,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -28,11 +37,4 @@ export function updateTaskStatus(task, newStatus) {
     status: newStatus,
     updatedAt: new Date().toISOString(),
   };
-}
-
-export function calculateTaskPriority(urgency) {
-  if (urgency > 80) return 'critical';
-  if (urgency > 60) return 'high';
-  if (urgency > 30) return 'medium';
-  return 'low';
 }

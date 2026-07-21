@@ -54,8 +54,8 @@ describe('PipelineOrchestrator.planFile', () => {
     const plan = await orchestrator.planFile(fixturePath, 'bundle.js');
 
     // From extractor.test results:
-    // Clean code size: ~19074, Extracted app code size: ~4864, ratio: ~0.745
-    expect(plan.appCodeSize).toBeCloseTo(4864, -2); // approximate check (+/- 100 chars)
-    expect(plan.boilerplateFilteredRatio).toBeCloseTo(0.745, 1); // approximate check (+/- 0.05)
+    // Clean code size: ~19600, Extracted app code size: ~5400, ratio: ~0.72
+    expect(plan.appCodeSize).toBeCloseTo(5412, -2); // approximate check (+/- 100 chars)
+    expect(plan.boilerplateFilteredRatio).toBeCloseTo(0.72, 1); // approximate check (+/- 0.05)
   });
 });

@@ -181,3 +181,8 @@ Updated tests/observability.test.ts to mock Langfuse.prototype.span and generati
 Changed getParentIds to check for presence of end function on parent to differentiate trace from span, correcting parentObservationId propagation
 
 ---
+# Optimize webpack-hello-world fixture for Call Graph evals
+2026-07-21 07:19:00 | master
+Enhanced webpack-hello-world fixture source files to exercise all exported functions, add callback-based call edges, introduce conditional branching paths, and rebuild dist/bundle.js for comprehensive Call Graph accuracy evaluations.
+
+---

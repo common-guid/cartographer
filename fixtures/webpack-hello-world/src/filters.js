@@ -20,7 +20,7 @@ export async function filterTasksByPriority(tasks, minPriority) {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(
-        tasks.filter((task) => priorityMap[task.priority] >= priorityMap[minPriority]),
+        tasks.filter((task) => (priorityMap[task.priority] || 0) >= (priorityMap[minPriority] || 0)),
       );
     }, 5);
   });
@@ -39,6 +39,10 @@ export async function searchTasks(tasks, query) {
       );
     }, 8);
   });
+}
+
+export function transformTasks(tasks, transformerFn) {
+  return tasks.map((task) => transformerFn(task));
 }
 
 export function getTaskStats(tasks) {

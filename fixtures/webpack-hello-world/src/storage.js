@@ -4,8 +4,6 @@
  * Imports from tasks.js to create a cross-file dependency.
  */
 
-import { TaskStatus } from './tasks';
-
 export class TaskStore {
   constructor(storeName) {
     this.storeName = storeName;
@@ -18,7 +16,7 @@ export class TaskStore {
   }
 
   updateTask(taskId, updates) {
-    const task = this.tasks.find((t) => t.id === taskId);
+    const task = this.getTaskById(taskId);
     if (task) {
       Object.assign(task, updates, { updatedAt: new Date().toISOString() });
     }
