@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    { "id": "app.js:displayTaskList", "file": "app.js", "name": "displayTaskList" },
+    { "id": "app.js:initializeApp", "file": "app.js", "name": "initializeApp" },
+    { "id": "tasks.js:calculateTaskPriority", "file": "tasks.js", "name": "calculateTaskPriority" },
+    { "id": "tasks.js:createTask", "file": "tasks.js", "name": "createTask" },
+    { "id": "tasks.js:updateTaskStatus", "file": "tasks.js", "name": "updateTaskStatus" },
+    { "id": "filters.js:filterTasksByStatus", "file": "filters.js", "name": "filterTasksByStatus" },
+    { "id": "filters.js:filterTasksByPriority", "file": "filters.js", "name": "filterTasksByPriority" },
+    { "id": "filters.js:searchTasks", "file": "filters.js", "name": "searchTasks" },
+    { "id": "filters.js:transformTasks", "file": "filters.js", "name": "transformTasks" },
+    { "id": "filters.js:getTaskStats", "file": "filters.js", "name": "getTaskStats" },
+    { "id": "storage.js:TaskStore:constructor", "file": "storage.js", "name": "constructor" },
+    { "id": "storage.js:TaskStore:addTask", "file": "storage.js", "name": "addTask" },
+    { "id": "storage.js:TaskStore:updateTask", "file": "storage.js", "name": "updateTask" },
+    { "id": "storage.js:TaskStore:removeTask", "file": "storage.js", "name": "removeTask" },
+    { "id": "storage.js:TaskStore:getTaskById", "file": "storage.js", "name": "getTaskById" },
+    { "id": "storage.js:TaskStore:getAllTasks", "file": "storage.js", "name": "getAllTasks" },
+    { "id": "storage.js:TaskStore:saveToStorage", "file": "storage.js", "name": "saveToStorage" }
+  ],
+  "edges": [
+    { "from": "app.js:initializeApp", "to": "storage.js:TaskStore:constructor" },
+    { "from": "app.js:initializeApp", "to": "tasks.js:createTask" },
+    { "from": "app.js:initializeApp", "to": "storage.js:TaskStore:addTask" },
+    { "from": "app.js:initializeApp", "to": "storage.js:TaskStore:getAllTasks" },
+    { "from": "app.js:initializeApp", "to": "filters.js:getTaskStats" },
+    { "from": "app.js:initializeApp", "to": "app.js:displayTaskList" },
+    { "from": "app.js:initializeApp", "to": "filters.js:filterTasksByPriority" },
+    { "from": "app.js:initializeApp", "to": "filters.js:searchTasks" },
+    { "from": "app.js:initializeApp", "to": "filters.js:transformTasks" },
+    { "from": "app.js:initializeApp", "to": "storage.js:TaskStore:getTaskById" },
+    { "from": "app.js:initializeApp", "to": "storage.js:TaskStore:updateTask" },
+    { "from": "app.js:initializeApp", "to": "storage.js:TaskStore:removeTask" },
+    { "from": "app.js:initializeApp", "to": "storage.js:TaskStore:saveToStorage" },
+    { "from": "tasks.js:createTask", "to": "tasks.js:calculateTaskPriority" },
+    { "from": "storage.js:TaskStore:updateTask", "to": "storage.js:TaskStore:getTaskById" }
+  ]
+}
