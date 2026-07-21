@@ -9,6 +9,7 @@
     "test": "vitest run",
     "test:providers": "node tests/run-provider-comparison.js",
     "test:visual": "node tests/visual-validation.js",
+    "eval:callgraph": "npx tsx tests/eval/evaluate-callgraph.ts",
     "start": "node dist/cli/run.js",
     "postinstall": "node scripts/install-humanify.js"
   },
