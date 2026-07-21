@@ -44,3 +44,4 @@ dist-output-e2e/
 !fixtures/*webpack-hello-world/
 test-out
 scratch/
+.checkpoints/
