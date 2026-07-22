@@ -39,19 +39,19 @@ flowchart TD
 - **Fixture-Driven**: The evaluation is strictly tied to the `webpack-hello-world` fixture, which acts as a controlled ground truth.
 
 ## 5. Implementation Steps
-- [ ] **Phase 1: Ground Truth Preparation**
-  - [ ] Create `tests/eval/` directory.
-  - [ ] Manually encode the expected call relationships (from `app.js`, `tasks.js`, `filters.js`, `storage.js`) into a `tests/eval/ground-truth-callgraph.json` manifest.
-- [ ] **Phase 2: Node Completeness Eval (Pillar 3.2)**
-  - [ ] Create an evaluation script that loads both the generated call graph and the ground truth.
-  - [ ] Write logic to verify every expected function from the ground truth is represented as a node in the generated graph.
-- [ ] **Phase 3: Edge Accuracy Eval (Pillar 3.1 & 3.3)**
-  - [ ] Write logic to match generated edges against expected edges.
-  - [ ] Calculate overall Precision, Recall, and F1 Score for all edges.
-  - [ ] Calculate specific Precision/Recall for cross-file edges (e.g., `app.js -> filters.js`).
-- [ ] **Phase 4: Integration**
-  - [ ] Add `"eval:callgraph"` script to `package.json`.
-  - [ ] Output a formatted summary of the metrics to the console.
+- [x] **Phase 1: Ground Truth Preparation**
+  - [x] Create `tests/eval/` directory.
+  - [x] Manually encode the expected call relationships (from `app.js`, `tasks.js`, `filters.js`, `storage.js`) into a `tests/eval/ground-truth-callgraph.json` manifest.
+- [x] **Phase 2: Node Completeness Eval (Pillar 3.2)**
+  - [x] Create an evaluation script that loads both the generated call graph and the ground truth.
+  - [x] Write logic to verify every expected function from the ground truth is represented as a node in the generated graph.
+- [x] **Phase 3: Edge Accuracy Eval (Pillar 3.1 & 3.3)**
+  - [x] Write logic to match generated edges against expected edges.
+  - [x] Calculate overall Precision, Recall, and F1 Score for all edges.
+  - [x] Calculate specific Precision/Recall for cross-file edges (e.g., `app.js -> filters.js`).
+- [x] **Phase 4: Integration**
+  - [x] Add `"eval:callgraph"` script to `package.json`.
+  - [x] Output a formatted summary of the metrics to the console.
 
 ## 6. File Manifest
 - **Added:**

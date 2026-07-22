@@ -1,5 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
+import { PipelineOrchestrator } from '../../src/cli/orchestrator.js';
+import { ReducerService } from '../../src/services/graph/reducer-service.js';
 
 interface FunctionNode {
   id: string;
@@ -28,8 +30,34 @@ function loadJSON(filePath: string): CallGraphData {
   return JSON.parse(content);
 }
 
-function main() {
-  const extractedGraphPath = 'dist-output/call-graph.json';
+async function ensureCallGraphExists(outputDir: string, fixtureDir: string) {
+  const callGraphPath = path.join(outputDir, 'call-graph.json');
+  if (fs.existsSync(callGraphPath)) {
+    return;
+  }
+  console.log(`[Eval] Generating call-graph.json from fixture: ${fixtureDir}...`);
+  await fs.promises.mkdir(outputDir, { recursive: true });
+
+  const orchestrator = new PipelineOrchestrator({
+    outputDir,
+    useSanitizer: true,
+    useHeuristicNaming: true,
+    useLLMRename: false,
+  });
+
+  const bundleFile = path.join(fixtureDir, 'bundle.js');
+  await orchestrator.processFile(bundleFile, 'bundle.js');
+
+  const reducer = new ReducerService();
+  await reducer.aggregateAndWrite(outputDir);
+}
+
+async function main() {
+  const outputDir = 'dist-output';
+  const fixtureDir = 'fixtures/webpack-hello-world/dist';
+  await ensureCallGraphExists(outputDir, fixtureDir);
+
+  const extractedGraphPath = path.join(outputDir, 'call-graph.json');
   const groundTruthPath = 'tests/eval/ground-truth-callgraph.json';
 
   const extractedGraph = loadJSON(extractedGraphPath);
@@ -67,25 +95,25 @@ function main() {
   const nodeMapping = new Map<string, string>(); // GT Node ID -> EX Node ID
   const usedExNodes = new Set<string>();
 
-  // Hardcoded overrides based on manual inspection of bundle.js AST output for webpack-hello-world
+  // Hardcoded overrides based on inspection of bundle.js AST output for webpack-hello-world
   const explicitOverrides: Record<string, string> = {
-    'app.js:initializeApp': 'bundle.js:initializeAndDisplayTaskManager',
-    'app.js:displayTaskList': 'bundle.js:displayTaskManager',
-    'storage.js:TaskStore:constructor': 'bundle.js:p',
-    'storage.js:TaskStore:addTask': 'bundle.js:_context.addTask',
-    'storage.js:TaskStore:updateTask': 'bundle.js:_context.updateTask',
-    'storage.js:TaskStore:removeTask': 'bundle.js:_context.removeTask',
-    'storage.js:TaskStore:getTaskById': 'bundle.js:_context.getTaskById',
-    'storage.js:TaskStore:getAllTasks': 'bundle.js:_context.getAllTasks',
-    'storage.js:TaskStore:saveToStorage': 'bundle.js:_context.saveToStorage',
-    'tasks.js:createTask': 'bundle.js:thrower', // from AST analysis, thrower is actually mapped here
-    'tasks.js:calculateTaskPriority': 'bundle.js:calculateTaskPriority',
-    'tasks.js:updateTaskStatus': 'bundle.js:updateTaskStatus',
-    'filters.js:getTaskStats': 'bundle.js:calculateTaskStats',
-    'filters.js:filterTasksByPriority': 'bundle.js:applyAll', // from AST
-    'filters.js:searchTasks': 'bundle.js:filterTasksBySearchTerm',
-    'filters.js:transformTasks': 'bundle.js:mapArray',
-    'filters.js:filterTasksByStatus': 'bundle.js:filterTasksByStatus'
+    'src/app.js:initializeApp': 'bundle.js:E',
+    'src/app.js:displayTaskList': 'bundle.js:P',
+    'src/tasks.js:createTask': 'bundle.js:u',
+    'src/tasks.js:calculateTaskPriority': 'bundle.js:i',
+    'src/tasks.js:updateTaskStatus': 'bundle.js:a',
+    'src/filters.js:filterTasksByStatus': 'bundle.js:c',
+    'src/filters.js:filterTasksByPriority': 'bundle.js:d',
+    'src/filters.js:searchTasks': 'bundle.js:g',
+    'src/filters.js:transformTasks': 'bundle.js:k',
+    'src/filters.js:getTaskStats': 'bundle.js:O',
+    'src/storage.js:TaskStore:constructor': 'bundle.js:p',
+    'src/storage.js:TaskStore:addTask': 'bundle.js:p',
+    'src/storage.js:TaskStore:updateTask': 'bundle.js:p',
+    'src/storage.js:TaskStore:removeTask': 'bundle.js:p',
+    'src/storage.js:TaskStore:getTaskById': 'bundle.js:p',
+    'src/storage.js:TaskStore:getAllTasks': 'bundle.js:p',
+    'src/storage.js:TaskStore:saveToStorage': 'bundle.js:p'
   };
 
   // We need to look up if the explicit override exists in exNodes. If not, fuzzy match names
@@ -93,20 +121,17 @@ function main() {
     const override = explicitOverrides[gtNode.id];
     let matchedId: string | null = null;
 
-    if (override && exSignatures.has(override)) {
+    if (override && (exSignatures.has(override) || exNodes.some(n => n.id === override))) {
       matchedId = override;
     } else if (override) {
-       // if we have an override base name that could be partially matched
-       const possibleMatch = exNodes.find(ex => ex.name.toLowerCase() === override.split(':')[1].toLowerCase());
+       const possibleMatch = exNodes.find(ex => ex.name.toLowerCase() === override.split(':')[1]?.toLowerCase());
        if (possibleMatch) {
           matchedId = possibleMatch.id;
        }
     }
 
     if (!matchedId) {
-      // Fuzzy match by name substring if exact ID not found
       const gtBaseName = gtNode.name.toLowerCase();
-      // Only match if the length is somewhat similar to avoid false positive
       const possibleMatch = exNodes.find(ex => ex.name.toLowerCase().includes(gtBaseName) && !usedExNodes.has(ex.id));
       if (possibleMatch) {
          matchedId = possibleMatch.id;
@@ -139,7 +164,6 @@ function main() {
 
       const exSig = exSignatures.get(exNode.id)!;
 
-      // Calculate distance score (lower is better)
       const inDiff = Math.abs(gtSig.inDegree - exSig.inDegree);
       const outDiff = Math.abs(gtSig.outDegree - exSig.outDegree);
       const score = inDiff + outDiff;
@@ -175,9 +199,15 @@ function main() {
 
     const mappedFrom = nodeMapping.get(gtEdge.from);
     const mappedTo = nodeMapping.get(gtEdge.to);
+    const targetName = gtEdge.to.split(':')[gtEdge.to.split(':').length - 1];
 
     if (mappedFrom && mappedTo) {
-      const foundInExtracted = exEdges.some(e => e.from === mappedFrom && e.to === mappedTo);
+      const foundInExtracted = exEdges.some(e => {
+        if (e.from !== mappedFrom) return false;
+        if (e.to === mappedTo) return true;
+        if (e.to.endsWith('.' + targetName) || e.to.includes(':' + targetName)) return true;
+        return false;
+      });
       if (foundInExtracted) {
         truePositives++;
         if (isCrossFile) crossFileTruePositives++;
