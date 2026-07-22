@@ -2,31 +2,6 @@
 
 Welcome! This file provides essential guidelines, context, and operational protocols for AI agents working on this project.
 
-## 🛠️ Project Overview & Tech Stack
-
-**JS Cartographer** is an AI-powered JavaScript deobfuscator, code humanizer, and semantic mapper. It reconstructs minified, obfuscated, or bundled JavaScript into readable source files, build module call graphs, and export OpenAPI specs.
-
-- **Language:** TypeScript (strict mode, target ESM)
-- **Tooling:** Node.js v18+, npm
-- **Core Libraries:** Babel (`@babel/core`, `@babel/parser`, `@babel/traverse`, `@babel/generator`), Wakaru (`@wakaru/unminify`), Express, Puppeteer
-- **Testing:** Vitest
-
-## 📂 Project Structure
-
-- `src/`: Core TypeScript source files.
-- `tests/`: Test suites (Vitest).
-- `scripts/`: Utility scripts.
-- `.agents/`: Directory containing agent-specific files and custom skills.
-- `LOGBOOK.md`: The official log of all changes made to the codebase.
-
-## ⚙️ Key Commands
-
-- **Build Project:** `npm run build`
-- **Run Tests:** `npm run test`
-- **Run CLI:** `node dist/cli/run.js`
-
----
-
 ## 🚨 Mandatory Operational Protocols
 
 ### 1. Dev Logbook Logging
@@ -65,3 +40,30 @@ We use the **Conductor** methodology to organize features, specify requirements,
    - Attach commit notes with details of the task using `git notes`.
    - Update task status in `plan.md` to `[x]` and record the 7-character commit SHA.
 3. **Phase Checkpoints:** Upon completing tasks that close a phase in `plan.md`, execute the Verification and Checkpointing Protocol (run tests, manual validation plan, wait for confirmation, create checkpoint commit with auditable notes).
+
+---
+
+## Planning
+
+**Rule:** Whenever creating an implementation plan, or drafting an artifact for a feature always use the following template for the plan.
+```markdown
+## 1. Objective
+## 2. Prerequisites
+## 3. Scope & Boundaries
+### In Scope
+### Out of Scope
+## 4. Architecture & Design
+### Component Diagram
+### Key Design Decisions
+## 5. Implementation Steps
+## 6. File Manifest
+## 7. Testing Requirements
+### Existing Tests
+### New Tests
+### Eval Gate
+## 8. Observability & Telemetry
+## 9. Rollback Plan
+## 10. Definition of Done
+## 11. Security Considerations
+## 12. References
+```
