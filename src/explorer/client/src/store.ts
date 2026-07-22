@@ -5,12 +5,14 @@ export interface FunctionNode {
   file: string;
   name: string;
   line: number;
+  isBoilerplate?: boolean;
 }
 
 export interface CallEdge {
   from: string;
   to: string;
   type: 'internal' | 'external';
+  isBoilerplate?: boolean;
 }
 
 export interface CallGraphData {
@@ -52,6 +54,8 @@ interface ExplorerState {
   loading: boolean;
   error: string | null;
 
+  showBoilerplate: boolean;
+  setShowBoilerplate: (show: boolean) => void;
   setGraphType: (type: 'module' | 'call') => void;
   selectNode: (nodeId: string | null) => Promise<void>;
   fetchGraphs: () => Promise<void>;
@@ -69,7 +73,9 @@ export const useStore = create<ExplorerState>((set, get) => ({
   selectedLineNumber: null,
   loading: false,
   error: null,
+  showBoilerplate: false,
 
+  setShowBoilerplate: (showBoilerplate) => set({ showBoilerplate }),
   setGraphType: (graphType) => {
     set({ graphType, selectedNodeId: null, fileContent: null, selectedFilePath: null, selectedLineNumber: null });
   },

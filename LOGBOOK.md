@@ -196,3 +196,8 @@ Implemented checkpoint_tool.py and added incremental-checkpoint skill documentat
 Created new Conductor track under conductor/tracks/jules_integration/ with index.md and plan.md based on jules_integration_plan.md, and registered it in conductor/index.md.
 
 ---
+# Add Boilerplate Filter and Bridge Node to Call Graph Visualization
+2026-07-22 15:04:26 | viz_filter
+Integrated BoilerplateClassifier into ASTExtractorService to flag boilerplate functions and calls. Updated ReducerService, store, and Explorer UI to add a Hide Boilerplate toggle. When hidden, boilerplate nodes are collapsed into a central Framework / Boilerplate bridge node to reduce visual graph noise. Added automated Puppeteer screenshot test for call graph.
+
+---

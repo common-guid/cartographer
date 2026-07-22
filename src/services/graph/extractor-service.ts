@@ -1,5 +1,6 @@
 import _babelCore from '@babel/core';
 import { BabelASTService } from '../ast/babel-core.js';
+import { BoilerplateClassifier } from '../boilerplate/classifier.js';
 
 export interface FileMetadata {
   id: string; // Relative path, e.g., "src/auth.js"
@@ -9,11 +10,13 @@ export interface FileMetadata {
     id: string; // e.g., "src/auth.js:loginUser"
     name: string;
     line: number;
+    isBoilerplate?: boolean;
   }[];
   calls: {
     from: string; // Caller ID
     to: string; // Callee Name (unresolved)
     type: "internal" | "external";
+    isBoilerplate?: boolean;
   }[];
   apiSinks: {
     method: string;
@@ -27,9 +30,28 @@ export class ASTExtractorService {
   extractMetadata(ast: _babelCore.types.File, filepath: string): FileMetadata {
     const imports: string[] = [];
     const exports: string[] = [];
-    const definedFunctions: { id: string; name: string; line: number }[] = [];
-    const calls: { from: string; to: string; type: "internal" | "external" }[] = [];
+    const definedFunctions: { id: string; name: string; line: number; isBoilerplate?: boolean }[] = [];
+    const calls: { from: string; to: string; type: "internal" | "external"; isBoilerplate?: boolean }[] = [];
     const apiSinks: { method: string; urlPattern: string }[] = [];
+
+    const boilerplateClassifier = new BoilerplateClassifier();
+    const filterResult = boilerplateClassifier.classify(ast);
+    const boilerplateNodes = new Set(
+      filterResult.classifiedNodes
+        .filter(n => n.classification === 'boilerplate')
+        .map(n => n.node)
+    );
+
+    function isNodeBoilerplate(path: any): boolean {
+      let current = path;
+      while (current) {
+        if (boilerplateNodes.has(current.node)) {
+          return true;
+        }
+        current = current.parentPath;
+      }
+      return false;
+    }
 
     // Keep track of what local names are imported from where
     // localName -> importSource
@@ -102,7 +124,8 @@ export class ASTExtractorService {
           definedFunctions.push({
             id: `${filepath}:${name}`,
             name,
-            line
+            line,
+            isBoilerplate: isNodeBoilerplate(path)
           });
           localFuncs.add(name);
         }
@@ -116,7 +139,8 @@ export class ASTExtractorService {
           definedFunctions.push({
             id: `${filepath}:${name}`,
             name,
-            line
+            line,
+            isBoilerplate: isNodeBoilerplate(path)
           });
           localFuncs.add(name);
         }
@@ -168,7 +192,8 @@ export class ASTExtractorService {
           calls.push({
             from,
             to,
-            type: isExternal ? 'external' : 'internal'
+            type: isExternal ? 'external' : 'internal',
+            isBoilerplate: isNodeBoilerplate(path)
           });
         }
 

@@ -9,7 +9,7 @@ import '@react-sigma/core/lib/style.css';
 const GraphLoader: React.FC = () => {
   const loadGraph = useLoadGraph();
   const sigma = useSigma();
-  const { graphType, graphsData, selectedNodeId } = useStore();
+  const { graphType, graphsData, selectedNodeId, showBoilerplate } = useStore();
 
   const graph = useMemo(() => {
     const g = new Graph();
@@ -54,10 +54,27 @@ const GraphLoader: React.FC = () => {
 
       // Register all nodes (internal and external)
       const registeredNodes = new Set<string>();
+      const bridgeNodeId = 'BRIDGE:BOILERPLATE';
+      let addedBridgeNode = false;
 
       nodeKeys.forEach((nodeId, index) => {
         const node = nodes[nodeId];
         const angle = (index / nodeKeys.length) * 2 * Math.PI;
+
+        if (!showBoilerplate && node.isBoilerplate) {
+          if (!addedBridgeNode) {
+            g.addNode(bridgeNodeId, {
+              label: 'Framework / Boilerplate',
+              x: 0,
+              y: 0,
+              size: 14,
+              color: '#64748b', // Slate gray
+            });
+            registeredNodes.add(bridgeNodeId);
+            addedBridgeNode = true;
+          }
+          return;
+        }
         
         g.addNode(nodeId, {
           label: node.name,
@@ -69,37 +86,49 @@ const GraphLoader: React.FC = () => {
         registeredNodes.add(nodeId);
       });
 
-      // Add external nodes that might only appear in edges
+      // Add call edges and external/bridge nodes
       edges.forEach((edge) => {
-        if (!registeredNodes.has(edge.from)) {
-          g.addNode(edge.from, {
-            label: edge.from.replace('external:', ''),
-            x: Math.random() * 20 - 10,
-            y: Math.random() * 20 - 10,
-            size: 6,
-            color: '#f87171', // Red for external caller/callee
-          });
-          registeredNodes.add(edge.from);
-        }
-        if (!registeredNodes.has(edge.to)) {
-          g.addNode(edge.to, {
-            label: edge.to.replace('external:', ''),
-            x: Math.random() * 20 - 10,
-            y: Math.random() * 20 - 10,
-            size: 6,
-            color: '#f87171', // Red for external caller/callee
-          });
-          registeredNodes.add(edge.to);
-        }
-      });
+        let fromId = edge.from;
+        let toId = edge.to;
+        let isBridgeEdge = false;
 
-      // Add call edges
-      edges.forEach((edge) => {
-        if (g.hasNode(edge.from) && g.hasNode(edge.to) && !g.hasEdge(edge.from, edge.to)) {
-          g.addEdge(edge.from, edge.to, {
+        if (!showBoilerplate) {
+          if (nodes[edge.from]?.isBoilerplate) {
+            fromId = bridgeNodeId;
+            isBridgeEdge = true;
+          }
+          if (nodes[edge.to]?.isBoilerplate) {
+            toId = bridgeNodeId;
+            isBridgeEdge = true;
+          }
+        }
+
+        if (!registeredNodes.has(fromId)) {
+          g.addNode(fromId, {
+            label: fromId.replace('external:', ''),
+            x: Math.random() * 20 - 10,
+            y: Math.random() * 20 - 10,
+            size: 6,
+            color: '#f87171', // Red for external caller/callee
+          });
+          registeredNodes.add(fromId);
+        }
+        if (!registeredNodes.has(toId)) {
+          g.addNode(toId, {
+            label: toId.replace('external:', ''),
+            x: Math.random() * 20 - 10,
+            y: Math.random() * 20 - 10,
+            size: 6,
+            color: '#f87171', // Red for external caller/callee
+          });
+          registeredNodes.add(toId);
+        }
+
+        if (g.hasNode(fromId) && g.hasNode(toId) && fromId !== toId && !g.hasEdge(fromId, toId)) {
+          g.addEdge(fromId, toId, {
             type: 'arrow',
-            size: 1.5,
-            color: edge.type === 'external' ? 'rgba(248, 113, 113, 0.3)' : 'rgba(52, 211, 153, 0.3)',
+            size: isBridgeEdge ? 1 : 1.5,
+            color: isBridgeEdge ? 'rgba(100, 116, 139, 0.25)' : (edge.type === 'external' ? 'rgba(248, 113, 113, 0.3)' : 'rgba(52, 211, 153, 0.3)'),
           });
         }
       });
@@ -139,8 +168,12 @@ const GraphLoader: React.FC = () => {
         const { entryPoint } = graphsData.moduleGraph;
         originalColor = entryPoint === node ? '#c084fc' : '#0ea5e9';
       } else {
-        const isExternal = node.startsWith('external:') || !graphsData.callGraph.nodes[node];
-        originalColor = isExternal ? '#f87171' : '#34d399';
+        if (node === 'BRIDGE:BOILERPLATE') {
+          originalColor = '#64748b';
+        } else {
+          const isExternal = node.startsWith('external:') || !graphsData.callGraph.nodes[node];
+          originalColor = isExternal ? '#f87171' : '#34d399';
+        }
       }
 
       let isHighlighted = true;

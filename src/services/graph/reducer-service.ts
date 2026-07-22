@@ -17,12 +17,14 @@ export interface FunctionNode {
   file: string;
   name: string;
   line: number;
+  isBoilerplate?: boolean;
 }
 
 export interface CallEdge {
   from: string;
   to: string;
   type: 'internal' | 'external';
+  isBoilerplate?: boolean;
 }
 
 export interface CallGraphData {
@@ -113,7 +115,8 @@ export class ReducerService {
           id: func.id,
           file: meta.id,
           name: func.name,
-          line: func.line
+          line: func.line,
+          isBoilerplate: func.isBoilerplate
         };
       }
     }
@@ -156,7 +159,8 @@ export class ReducerService {
         callGraph.edges.push({
           from: callerId,
           to: resolvedCalleeId,
-          type: call.type
+          type: call.type,
+          isBoilerplate: call.isBoilerplate
         });
       }
     }

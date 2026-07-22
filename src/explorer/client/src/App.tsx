@@ -13,6 +13,8 @@ const App: React.FC = () => {
     filesList,
     selectedFilePath,
     error,
+    showBoilerplate,
+    setShowBoilerplate,
     fetchGraphs,
     fetchFilesList,
     selectNode
@@ -93,6 +95,23 @@ const App: React.FC = () => {
               Call Graph
             </button>
           </div>
+
+          {graphType === 'call' && (
+            <div className="toggle-group" style={{ marginLeft: '1rem' }}>
+              <label 
+                className="toggle-label" 
+                id="hide-boilerplate-toggle"
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', color: '#f3f4f6', fontSize: '0.85rem' }}
+              >
+                <input 
+                  type="checkbox" 
+                  checked={!showBoilerplate}
+                  onChange={(e) => setShowBoilerplate(!e.target.checked)}
+                />
+                Hide Boilerplate
+              </label>
+            </div>
+          )}
         </div>
       </header>
 
