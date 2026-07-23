@@ -191,8 +191,15 @@ Enhanced webpack-hello-world fixture source files to exercise all exported funct
 Implemented checkpoint_tool.py and added incremental-checkpoint skill documentation.
 
 ---
+
 # Add Conductor track for Jules REST API Integration
 2026-07-21 11:41:16 | eval-modules
 Created new Conductor track under conductor/tracks/jules_integration/ with index.md and plan.md based on jules_integration_plan.md, and registered it in conductor/index.md.
+
+---
+
+# Implement Pillar 3 Call Graph Accuracy Evaluation Harness
+2026-07-22 14:56:48 | eval-modules
+Implemented ground-truth-callgraph.json and evaluation runner tests/eval/evaluate-callgraph.ts measuring Node Recall, Edge Precision, Edge Recall, F1 Score, and Cross-File Edge Recall. All eval criteria met (Node Recall 100%, F1 86.7%, Cross-File Recall 92.3%).
 
 ---

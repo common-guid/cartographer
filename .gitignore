@@ -45,3 +45,4 @@ dist-output-e2e/
 test-out
 scratch/
 .checkpoints/
+*.bak
