@@ -1,3 +1,6 @@
+---
+date_updated: 2026-07-31
+---
 # Call Graph Evaluation Guide
 
 This guide explains how to use the **Call Graph Evaluation Feature** (Pillar 3 of Cartographer's Evaluation Strategy) to measure the accuracy of function node extraction and call edge detection across bundled and obfuscated JavaScript code.

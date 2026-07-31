@@ -1,3 +1,6 @@
+---
+date_updated: 2026-07-31
+---
 # JS Cartographer - Architecture & Design Reference
 
 This document outlines the internal design, component specifications, data contracts, and error-isolation guides of JS Cartographer. Use this guide to understand how input files are processed and to isolate pipeline failures.
@@ -239,7 +242,7 @@ Use the matrix below to isolate issues.
 
 | Symptom / Error | Processing Stage | Probable Component Culprit | Debug / Isolation Steps |
 |:---|:---|:---|:---|
-| **`SyntaxError: ...`** during Wakaru or AST parsing | Map Phase: Sanitization / Parse | `WakaruSanitizer` or `BabelASTService` | 1. Run `node dist/cli/run.js plan <file>` with and without `--no-sanitizer` to see if parsing succeeds.<br/>2. Inspect the file to check for ESNext syntax features that require additional Babel plugins. |
+| **`SyntaxError: ...`** during Wakaru or AST parsing | Map Phase: Sanitization / Parse | `WakaruSanitizer` or `BabelASTService` | 1. Run `node dist/cli/run.js plan <input>` with and without `--no-sanitizer` to see if parsing succeeds.<br/>2. Inspect the file to check for ESNext syntax features that require additional Babel plugins. |
 | **`API Rate Limit Exceeded`** or execution hangs | Map Phase: Rename | `HumanifyService` (Token Refiller) | 1. Ensure `BOILERPLATE_FILTER_ENABLED=true` to decrease prompt payload sizes.<br/>2. If using cloud APIs, check rate limits or throttle thread concurrency. |
 | Missing user functions or variables are not renamed | Map Phase: Filter / Rename | `BoilerplateClassifier` / `AppCodeExtractor` | 1. Check if the function contains signature string patterns matching a boilerplate fingerprint.<br/>2. Adjust `isShortFunction` statement threshold if the app function is small. |
 | **`Module not found`** or `Unresolved import` in reducer | Reduce Phase: Aggregation | `ReducerService` (enhanced-resolve) | 1. Check path configuration aliases in the bundle's bundler config (e.g. Webpack aliases).<br/>2. Inspect target file dependencies in `.metadata.json` to verify relative resolution paths. |

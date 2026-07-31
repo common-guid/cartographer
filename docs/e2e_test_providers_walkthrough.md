@@ -1,3 +1,6 @@
+---
+date_updated: 2026-07-31
+---
 # Walkthrough: Running Multi-Provider E2E Tests in JS Cartographer
 
 Welcome! This guide is designed to take you from a freshly cloned repository all the way to running the multi-provider end-to-end (E2E) comparison test suite and analyzing the generated comparison reports. 
